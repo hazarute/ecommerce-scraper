@@ -1,63 +1,59 @@
+## 4. Son Teknik Güncellemeler
+
+- `selenium_scraper.py` ile Selenium tabanlı scraping desteği eklendi.
+- Tüm siteye özel seçiciler config/sites_config.json dosyasına taşındı.
+- Kodun modüler yapısı sayesinde yeni scraping stratejileri kolayca eklenebilir.
+
 # Teknik Detaylar
 
 ## 1. Teknolojiler ve Sürümler
 
 - **Programlama Dili:** Python (Sürüm 3.6 veya üzeri)
 - **Temel Kütüphaneler:**
-    - `requests`: HTTP isteklerini basitleştirmek için. Web sitelerinden HTML içeriğini almak için kullanılır.
-    - `beautifulsoup4`: HTML ve XML dosyalarını ayrıştırmak için. HTML içeriğinden belirli veri parçalarını (ürün adı, fiyat vb.) çıkarmak için kullanılır.
-    - `lxml`: `BeautifulSoup` için yüksek performanslı bir HTML ayrıştırıcısı.
-- **Tarayıcı Otomasyon Kütüphaneleri (Yeni):**
-    - `selenium`: Web tarayıcılarını programatik olarak kontrol etmek için. Anti-bot korumalı sitelere erişim sağlar.
-    - `webdriver-manager`: Chrome WebDriver'ı otomatik olarak indirme ve yönetme. Manuel driver kurulumunu ortadan kaldırır.
+  - `requests`: HTTP istekleri (basit scraping için)
+  - `beautifulsoup4`: HTML ayrıştırma
+  - `lxml`: BeautifulSoup için hızlı parser
+- **Tarayıcı Otomasyon Kütüphaneleri:**
+  - `selenium`: Gelişmiş scraping ve anti-bot korumalı siteler için
+  - `webdriver-manager`: Chrome WebDriver'ı otomatik indirir ve yönetir
+- **Modüler Yapı:**
+  - Kod scrapers/ klasöründe modüllere ayrılmıştır (base_scraper.py, requests_scraper.py, selenium_scraper.py)
 - **Yapılandırma:**
-    - JSON dosyaları site-spesifik ayarlar için kullanılıyor.
+  - Tüm siteye özel seçiciler ve ayarlar config/sites_config.json dosyasındadır
+
 
 ## 2. Geliştirme Ortamı Kurulumu
 
 1.  **Python Kurulumu:**
-    - Sistemde Python 3.6 veya daha yeni bir sürümün kurulu olduğundan emin olun.
-    - Kurulumu doğrulamak için terminalde `python --version` komutunu çalıştırın.
+  - Python 3.6 veya üzeri gereklidir.
+  - Kontrol: `python --version`
 
 2.  **Proje Klonlama:**
-    - Proje dosyalarını yerel makinenize indirmek için Git kullanın:
-      ```bash
-      git clone https://github.com/hazarute/ecommerce-scraper.git
-      cd ecommerce-scraper
-      ```
+  - `git clone https://github.com/hazarute/ecommerce-scraper.git`
+  - `cd ecommerce-scraper`
 
 3.  **Sanal Ortam (Önerilir):**
-    - Proje bağımlılıklarını sistem genelindeki paketlerden izole etmek için bir sanal ortam oluşturulması şiddetle tavsiye edilir.
-      ```bash
-      python -m venv venv
-      ```
-    - Sanal ortamı etkinleştirin:
-      - Windows: `.\venv\Scripts\activate`
-      - macOS/Linux: `source venv/bin/activate`
+  - `python -m venv venv`
+  - Windows: `.\venv\Scripts\activate`
+  - macOS/Linux: `source venv/bin/activate`
 
 4.  **Bağımlılıkların Yüklenmesi:**
-    - Gerekli tüm Python kütüphanelerini yüklemek için `pip` kullanın:
-      ```bash
-      pip install -r requirements.txt
-      ```
+  - `pip install -r requirements.txt`
 
-## 3. Bağımlılık Yönetimi
 
-- Projenin tüm Python bağımlılıkları, kök dizinde bulunan `requirements.txt` dosyasında listelenir.
-- Yeni bir bağımlılık eklendiğinde, bu dosyaya eklenmelidir.
-- **Güncellenmiş `requirements.txt` içeriği:**
-  ```
-  requests
-  beautifulsoup4
-  lxml
-  selenium
-  webdriver-manager
-  ```
+## 3. Bağımlılık Yönetimi ve Teknik Notlar
 
-### Selenium Kurulum Notları:
-- **Chrome Tarayıcı:** Sistemde Google Chrome yüklü olmalıdır. Selenium, Chrome'u kontrol etmek için kullanır.
-- **WebDriver:** `webdriver-manager` paketi, ChromeDriver'ı otomatik olarak indirir ve yönetir. Manuel kurulum gerekmez.
-- **Headless Mod:** Selenium, GUI olmadan (headless) çalışabilir. Bu, sunucu ortamlarında veya hızlı testler için kullanışlıdır.
+- Tüm bağımlılıklar requirements.txt dosyasındadır:
+  - requests
+  - beautifulsoup4
+  - lxml
+  - selenium
+  - webdriver-manager
+
+- **Selenium Kurulum Notları:**
+    - Google Chrome yüklü olmalı
+    - WebDriver otomatik yönetilir (manuel indirme gerekmez)
+    - Headless mod ile tarayıcı arayüzü olmadan scraping yapılabilir
 
 ## 4. Projeyi Çalıştırma
 

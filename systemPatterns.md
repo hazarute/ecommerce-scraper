@@ -1,8 +1,16 @@
+## 3. Son Mimari Güncellemeler
+
+- `selenium_scraper.py` ile Selenium tabanlı scraping desteği eklendi.
+- Tüm siteye özel seçiciler ve ayarlar config/sites_config.json dosyasına taşındı.
+- Requests ve Selenium modülleri, base_scraper.py üzerinden ortak arayüzle çalışıyor.
+- Ana akışta kullanıcıdan mod ve site seçimi alınacak, uygun scraper factory pattern ile başlatılacak.
+
 # Sistem Mimarisi ve Desenleri
 
 ## 1. Genel Sistem Mimarisi
 
-Proje, başlangıçta basit tek betikli yapıdan, **hibrit modüler mimariye** geçiş yapıyor. Bu yeni mimari, hem basit HTTP isteklerini hem de gelişmiş tarayıcı otomasyonunu destekleyecek şekilde tasarlandı.
+Proje, başlangıçta tek dosya (scraper.py) ve sabit seçicilerle ilerlerken, artık **hibrit ve modüler mimari**ye evrildi. Kod, scrapers/ klasöründe modüllere ayrıldı; base_scraper.py ile soyut taban sınıf, requests_scraper.py ve selenium_scraper.py ile iki ayrı scraping stratejisi uygulanıyor. Tüm siteye özel seçiciler ve ayarlar config/sites_config.json dosyasına taşınıyor. Ana akış, kullanıcıdan mod ve site seçimi alıp uygun scraper'ı başlatan factory pattern ile yönetilecek.
+
 
 ### Güncel Akış Diyagramı (Hibrit Mimari)
 
@@ -41,24 +49,35 @@ flowchart TD
     R --> S
 ```
 
-### Yeni Dosya ve Modül Yapısı
+
+### Güncel Dosya ve Modül Yapısı
 
 ```
 E-commerce Product Scraper/
-├── scraper.py              # Ana giriş noktası, kullanıcı arayüzü
+├── scraper.py              # Ana giriş noktası, kullanıcı arayüzü ve mod seçimi
 ├── scrapers/               # Scraper modülleri
 │   ├── __init__.py
-│   ├── base_scraper.py     # Abstract base class
-│   ├── requests_scraper.py # Basit HTTP (mevcut mantık)
-│   └── selenium_scraper.py # Tarayıcı otomasyon
+│   ├── base_scraper.py     # Soyut taban sınıf
+│   ├── requests_scraper.py # Requests tabanlı scraper (mod 1)
+│   └── selenium_scraper.py # Selenium tabanlı scraper (mod 2)
 ├── config/
-│   └── sites_config.json   # Site-spesifik CSS seçiciler
-├── memory-bank/            # Teknik dokümantasyon
+│   └── sites_config.json   # Siteye özel seçiciler ve ayarlar
+├── memory-bank/            # Teknik dokümantasyon ve entegrasyon planları
 │   └── selenium_integration_plan.md
 ├── requirements.txt
 ├── projectbrief.md
 ├── activeContext.md
-└── README.md
+├── systemPatterns.md
+├── techContext.md
+├── progress.md
+```
+
+## 2. Temel Mimari Kararlar
+
+- Kodun modüllere ayrılması (scrapers/), sürdürülebilirlik ve genişletilebilirlik sağlar.
+- Tüm siteye özel seçiciler ve ayarlar config/sites_config.json dosyasına taşınır.
+- Ana akış, kullanıcıdan mod ve site seçimi alıp uygun scraper'ı başlatan factory pattern ile yönetilir.
+- Selenium entegrasyonu ile anti-bot sistemleri aşılabilir, headless mod ve otomatik WebDriver yönetimi desteklenir.
 ```
 
 ## 2. Uygulanan Tasarım Desenleri

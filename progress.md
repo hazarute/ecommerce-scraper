@@ -4,14 +4,13 @@
 
 ## Yapılacaklar (TO-DO)
 
-### Selenium Entegrasyonu (Aktif)
-- `[ ]` `requirements.txt` dosyasına `selenium` ve `webdriver-manager` ekle.
-- `[ ]` `scrapers/` klasör yapısını oluştur.
-- `[ ]` `base_scraper.py` soyut sınıfını yaz (abstract base class).
-- `[ ]` Mevcut kodu `requests_scraper.py` modülüne taşı ve refactor et.
-- `[ ]` `selenium_scraper.py` modülünü oluştur (WebDriver yönetimi, bekleme stratejileri).
-- `[ ]` `config/sites_config.json` dosyasını oluştur (Hepsiburada, Trendyol, N11 için seçiciler).
-- `[ ]` Ana `scraper.py` dosyasını hibrit mimariye göre güncelle (mod seçimi, factory pattern).
+- `[X]` `requirements.txt` dosyasına `selenium` ve `webdriver-manager` ekle.
+- `[X]` `scrapers/` klasör yapısını oluştur.
+- `[X]` `base_scraper.py` soyut sınıfını yaz (abstract base class).
+- `[X]` Mevcut kodu `requests_scraper.py` modülüne taşı ve refactor et.
+- `[X]` `selenium_scraper.py` modülünü oluştur (WebDriver yönetimi, bekleme stratejileri).
+- `[X]` `config/sites_config.json` dosyasını oluştur (Hepsiburada, Trendyol, N11 için seçiciler).
+- `[~]` Ana `scraper.py` dosyasını hibrit mimariye göre güncelle (mod seçimi, factory pattern).
 - `[ ]` Selenium ile Hepsiburada'dan veri çekmeyi test et.
 - `[ ]` Trendyol ve N11 için test et ve CSS seçicilerini ayarla.
 - `[ ]` Headless mod desteği ekle ve test et.
@@ -24,7 +23,8 @@
 - `[ ]` Rate limiting (istekler arası gecikme) ekle.
 - `[ ]` Unit testler yaz.
 
-## Tamamlananlar (DONE)
+
+	- `[X]` İlk yazılan scraper.py kodu memory-bank/scraper_v1_archive.md dosyasına arşivlendi.
 
 - `[X]` Proje hedeflerini ve kurallarını anlamak için `ReadMe.md` ve `Rules_MemoryBank.md` dosyaları incelendi.
 - `[X]` `projectbrief.md` oluşturuldu.

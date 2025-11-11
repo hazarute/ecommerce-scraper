@@ -1,0 +1,35 @@
+{
+  "hepsiburada": {
+    "url": "https://www.hepsiburada.com/",
+    "method": "selenium",
+    "selectors": {
+      "product_container": "div.product-list",
+      "product_item": "li.productListContent-item",
+      "product_name": "h3.product-title",
+      "product_price": "span.price-value"
+    },
+    "wait_time": 5
+  },
+  "trendyol": {
+    "url": "https://www.trendyol.com/",
+    "method": "selenium",
+    "selectors": {
+      "product_container": "div.prdct-cntnr-wrppr",
+      "product_item": "div.p-card-wrppr",
+      "product_name": "div.p-card-chldrn-cntnr span.prdct-desc-cntnr-ttl",
+      "product_price": "div.prc-box-dscntd"
+    },
+    "wait_time": 5
+  },
+  "n11": {
+    "url": "https://www.n11.com/",
+    "method": "selenium",
+    "selectors": {
+      "product_container": "ul.list-ul",
+      "product_item": "li.column",
+      "product_name": "h3.productName",
+      "product_price": "div.proDetail span.newPrice ins"
+    },
+    "wait_time": 5
+  }
+}

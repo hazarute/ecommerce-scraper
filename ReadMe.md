@@ -6,22 +6,33 @@
 
 Türkçe açıklama için [aşağıya inin](#tr)
 
+
 ## 🌟 About The Project
 
-A simple and educational Python web scraper that extracts product information from e-commerce websites. This project demonstrates basic web scraping techniques using `requests` and `BeautifulSoup` libraries.
+A modular and educational Python web scraper that extracts product information from e-commerce websites. The project demonstrates both basic (Requests + BeautifulSoup) and advanced (Selenium) web scraping techniques. It is designed with a hybrid architecture for real-world scraping challenges (anti-bot, dynamic content).
+
 
 ### Built With
 - [Python](https://www.python.org/)
 - [Requests](https://docs.python-requests.org/)
 - [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/)
+- [Selenium](https://www.selenium.dev/)
+- [webdriver-manager](https://github.com/SergeyPirogov/webdriver_manager)
+
 
 ## 🚀 Features
 
+- **Hybrid Scraping Modes**: Choose between fast Requests/BeautifulSoup (simple) or Selenium (advanced, anti-bot)
+- **Headless Mode for Selenium**: Run Selenium in headless mode (no browser window) by selecting the option at runtime.
+- **Factory Pattern & Modular Design**: The main script uses a factory pattern to select and instantiate the appropriate scraper module based on user input.
 - **Product Data Extraction**: Scrapes product names and prices from e-commerce sites
-- **Simple Configuration**: Easy to set up and use
-- **Educational Focus**: Clean code structure for learning purposes
-- **Error Handling**: Includes fallback demo data when scraping fails
-- **Customizable**: Easy to modify for different websites
+- **Modular & Extensible**: Easily add new sites or scraping strategies (see `scrapers/` folder)
+- **Site-Specific Config**: CSS selectors and settings in `config/sites_config.json`
+- **Error Handling**: Detailed HTTP error messages and fallback demo data
+- **Educational Focus**: Clean, well-documented code for learning
+
+- **Demo Data Fallback**: If scraping fails due to anti-bot measures or selector issues, demo product data is shown.
+- **Memory Bank System**: Project context, progress, and design notes are tracked in the `memory-bank/` folder for transparency and maintainability.
 
 ## 📦 Installation
 
@@ -36,29 +47,53 @@ git clone https://github.com/hazarute/ecommerce-scraper.git
 cd ecommerce-scraper
 ```
 
+
 2. Install required packages
 ```bash
 pip install -r requirements.txt
 ```
 
+
 ## 💻 Usage
 
+The scraper supports both simple (Requests) and advanced (Selenium) modes. You can select the scraping mode and target site at runtime.
 
-Run the scraper with a simple command:
-
+**Run the scraper:**
 ```bash
 python scraper.py
 ```
 
-When you run the script, you will be prompted to select from popular e-commerce sites (Hepsiburada, Trendyol, N11) or enter a custom product listing URL. The script will:
-1. Connect to the selected e-commerce website
-2. Extract the first 5 products' names and prices (if selectors are compatible)
-3. Display the results in a formatted table in your terminal
+**Selenium Headless Mode:**
+If you select Selenium mode, you will be prompted:
+```
+Selenium için headless modda çalıştırılsın mı? (E/h):
+```
+Press Enter or type 'E' for headless (no browser window), or 'h' to see the browser window.
+
+**How it works:**
+1. Prompts you to select scraping mode: Requests (fast, basic) or Selenium (advanced, anti-bot)
+2. Prompts you to select a site (Hepsiburada, Trendyol, N11) or enter a custom URL
+3. Loads site-specific selectors from `config/sites_config.json`
+4. Extracts product names and prices (first 5 products)
+5. Displays results in a formatted table
+
+**If scraping fails (due to anti-bot or selector issues), demo product data will be shown instead.**
+
+**Modular Structure:**
+- `scrapers/` folder: Contains `base_scraper.py`, `requests_scraper.py`, `selenium_scraper.py`
+- `config/sites_config.json`: Site-specific selectors and settings
+- `memory-bank/`: Project context, progress, and design notes
 
 ### Example Output
 ```
 🛍️  E-commerce Product Scraper
 ==================================================
+Select scraping mode:
+1) Requests (fast, basic)
+2) Selenium (advanced, anti-bot)
+Default is 1 (Requests).
+Mode (1/2): 2
+
 Which site to scrape product info from?
 1) Hepsiburada (https://www.hepsiburada.com/)
 2) Trendyol (https://www.trendyol.com/)
@@ -66,8 +101,7 @@ Which site to scrape product info from?
 4) Manual entry
 Default is 1 (Hepsiburada).
 Selection (1/2/3/4): 1
-'
-https://www.hepsiburada.com/' adresinden ürünler çekiliyor...
+Fetching products from 'https://www.hepsiburada.com/' ...
 
 1. Product: iPhone 14 Pro
    Price: 45.999 ₺
@@ -114,28 +148,38 @@ Project Link: [https://github.com/hazarute/ecommerce-scraper](https://github.com
 
 ---
 
+
 # E-ticaret Ürün Kazıyıcı 🛒
 
 [![Python Version](https://img.shields.io/badge/python-3.6%2B-blue)](https://www.python.org/)
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Durum](https://img.shields.io/badge/durum-aktif-başarılı.svg)](https://github.com/kullaniciadiniz/ecommerce-scraper)
+[![Durum](https://img.shields.io/badge/durum-aktif-başarılı.svg)](https://github.com/hazarute/ecommerce-scraper)
 
 ## 🌟 Proje Hakkında
 
-E-ticaret web sitelerinden ürün bilgilerini çeken basit ve eğitici bir Python web kazıyıcı. Bu proje, `requests` ve `BeautifulSoup` kütüphaneleri kullanılarak temel web kazıma tekniklerini göstermektedir.
+Modüler ve eğitici bir Python web kazıyıcı. Hem temel (Requests + BeautifulSoup) hem de gelişmiş (Selenium) web kazıma tekniklerini gösterir. Gerçek dünya scraping zorlukları (anti-bot, dinamik içerik) için hibrit mimari ile tasarlanmıştır.
+
+> **Not:** Kod, fabrika (factory) deseniyle çalışır; kullanıcıdan alınan moda göre uygun scraper modülü başlatılır. Bellek bankası (`memory-bank/`), proje ilerlemesi ve mimari kararlar için kullanılır.
 
 ### Kullanılan Teknolojiler
 - [Python](https://www.python.org/)
 - [Requests](https://docs.python-requests.org/)
 - [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/)
+- [Selenium](https://www.selenium.dev/)
+- [webdriver-manager](https://github.com/SergeyPirogov/webdriver_manager)
 
 ## 🚀 Özellikler
 
+- **Hibrit Kazıma Modları**: Requests/BeautifulSoup (hızlı, basit) veya Selenium (gelişmiş, anti-bot) seçilebilir
+- **Headless Mod (Selenium)**: Selenium, istenirse headless (görünmez) modda çalıştırılabilir. Çalıştırırken sorulur.
+- **Fabrika Deseni & Modüler Yapı**: Ana script, kullanıcıdan alınan moda göre uygun scraper modülünü başlatır.
 - **Ürün Verisi Çekme**: E-ticaret sitelerinden ürün isimleri ve fiyatları çeker
-- **Basit Kurulum**: Kullanımı ve kurulumu kolay
-- **Eğitici Odaklı**: Öğrenme amacıyla temiz kod yapısı
-- **Hata Yönetimi**: Kazıma başarısız olursa yedek demo verileri gösterir
-- **Özelleştirilebilir**: Farklı web siteleri için kolayca değiştirilebilir
+- **Modüler & Genişletilebilir**: Yeni site veya scraping stratejisi kolayca eklenebilir (`scrapers/` klasörü)
+- **Siteye Özel Ayarlar**: CSS seçiciler ve ayarlar `config/sites_config.json` dosyasında
+- **Hata Yönetimi**: Detaylı HTTP hata mesajları ve yedek demo veri
+- **Eğitici Odaklı**: Temiz ve iyi dokümante edilmiş kod
+- **Demo Veri Desteği**: Anti-bot veya seçici hatası durumunda demo ürün verisi gösterilir.
+- **Bellek Bankası Sistemi**: Proje bağlamı, ilerleme ve mimari notlar `memory-bank/` klasöründe tutulur.
 
 ## 📦 Kurulum
 
@@ -155,23 +199,47 @@ cd ecommerce-scraper
 pip install -r requirements.txt
 ```
 
+
 ## 💻 Kullanım
 
-Kazıyıcıyı basit bir komutla çalıştırın:
+Kazıyıcı hem basit (Requests) hem de gelişmiş (Selenium) modları destekler. Çalıştırırken mod ve site seçimi yapabilirsiniz.
 
+**Kazıyıcıyı çalıştırın:**
 ```bash
 python scraper.py
 ```
 
-Script şunları yapacaktır:
-1. Hedef e-ticaret web sitesine bağlanacak
-2. İlk 5 ürünün isim ve fiyatlarını çekecek
-3. Sonuçları terminalinizde formatlanmış tablo halinde gösterecek
+**Selenium Headless Modu:**
+Selenium modu seçerseniz şu şekilde sorulur:
+```
+Selenium için headless modda çalıştırılsın mı? (E/h):
+```
+Enter veya 'E' ile headless (görünmez) modda, 'h' ile tarayıcı penceresi açık çalışır.
+
+**Nasıl çalışır?**
+1. Kazıma modu sorulur: Requests (hızlı, temel) veya Selenium (gelişmiş, anti-bot)
+2. Site seçimi (Hepsiburada, Trendyol, N11) veya manuel URL girişi
+3. Siteye özel seçiciler `config/sites_config.json` dosyasından yüklenir
+4. Ürün isimleri ve fiyatları (ilk 5 ürün) çekilir
+5. Sonuçlar terminalde tablo olarak gösterilir
+
+**Eğer scraping başarısız olursa (anti-bot veya seçici hatası), demo ürün verisi gösterilir.**
+
+**Modüler Yapı:**
+- `scrapers/` klasörü: `base_scraper.py`, `requests_scraper.py`, `selenium_scraper.py`
+- `config/sites_config.json`: Siteye özel seçiciler ve ayarlar
+- `memory-bank/`: Proje bağlamı, ilerleme ve mimari notlar
 
 ### Örnek Çıktı
 ```
 🛍️  E-ticaret Ürün Kazıyıcı
 ==================================================
+Kazıma modu seçin:
+1) Requests (hızlı, temel)
+2) Selenium (gelişmiş, anti-bot)
+Boş bırakılırsa 1 (Requests).
+Mod (1/2): 2
+
 Hangi siteden ürün bilgisi kazınsın?
 1) Hepsiburada (https://www.hepsiburada.com/)
 2) Trendyol (https://www.trendyol.com/)
@@ -179,8 +247,7 @@ Hangi siteden ürün bilgisi kazınsın?
 4) Manuel giriş
 Boş bırakılırsa 1 (Hepsiburada) seçilir.
 Seçiminiz (1/2/3/4): 1
-'
-https://www.hepsiburada.com/' adresinden ürünler çekiliyor...
+'https://www.hepsiburada.com/' adresinden ürünler çekiliyor...
 
 1. Ürün: iPhone 14 Pro
    Fiyat: 45.999 ₺
