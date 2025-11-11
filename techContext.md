@@ -6,8 +6,12 @@
 - **Temel Kütüphaneler:**
     - `requests`: HTTP isteklerini basitleştirmek için. Web sitelerinden HTML içeriğini almak için kullanılır.
     - `beautifulsoup4`: HTML ve XML dosyalarını ayrıştırmak için. HTML içeriğinden belirli veri parçalarını (ürün adı, fiyat vb.) çıkarmak için kullanılır.
-- **Yardımcı Kütüphaneler:**
-    - `lxml`: `BeautifulSoup` için yüksek performanslı bir HTML ayrıştırıcısı olarak önerilir, ancak başlangıç için zorunlu değildir. `requirements.txt` dosyasına dahil edilecektir.
+    - `lxml`: `BeautifulSoup` için yüksek performanslı bir HTML ayrıştırıcısı.
+- **Tarayıcı Otomasyon Kütüphaneleri (Yeni):**
+    - `selenium`: Web tarayıcılarını programatik olarak kontrol etmek için. Anti-bot korumalı sitelere erişim sağlar.
+    - `webdriver-manager`: Chrome WebDriver'ı otomatik olarak indirme ve yönetme. Manuel driver kurulumunu ortadan kaldırır.
+- **Yapılandırma:**
+    - JSON dosyaları site-spesifik ayarlar için kullanılıyor.
 
 ## 2. Geliştirme Ortamı Kurulumu
 
@@ -41,12 +45,19 @@
 
 - Projenin tüm Python bağımlılıkları, kök dizinde bulunan `requirements.txt` dosyasında listelenir.
 - Yeni bir bağımlılık eklendiğinde, bu dosyaya eklenmelidir.
-- `requirements.txt` içeriği:
+- **Güncellenmiş `requirements.txt` içeriği:**
   ```
   requests
   beautifulsoup4
   lxml
+  selenium
+  webdriver-manager
   ```
+
+### Selenium Kurulum Notları:
+- **Chrome Tarayıcı:** Sistemde Google Chrome yüklü olmalıdır. Selenium, Chrome'u kontrol etmek için kullanır.
+- **WebDriver:** `webdriver-manager` paketi, ChromeDriver'ı otomatik olarak indirir ve yönetir. Manuel kurulum gerekmez.
+- **Headless Mod:** Selenium, GUI olmadan (headless) çalışabilir. Bu, sunucu ortamlarında veya hızlı testler için kullanışlıdır.
 
 ## 4. Projeyi Çalıştırma
 
@@ -57,6 +68,17 @@
 
 ## 5. Teknik Kısıtlamalar ve Bilinen Sınırlar
 
-- **JavaScript Oluşturulan İçerik:** Bu kazıyıcı, yalnızca sunucudan gelen ilk HTML yanıtını işleyebilir. Eğer bir web sitesi ürün bilgilerini JavaScript kullanarak sonradan yüklüyorsa (dinamik içerik), bu araç o verileri göremez. Bu tür siteler için Selenium veya Scrapy gibi daha gelişmiş araçlar gerekir.
-- **Kazıma Engelleri:** Birçok modern e-ticaret sitesi, otomatik kazıma girişimlerini engellemek için Cloudflare gibi güvenlik önlemleri veya CAPTCHA'lar kullanır. Bu kazıyıcı, bu tür engelleri aşmak için herhangi bir mekanizma içermez.
-- **Hız Sınırlamaları (Rate Limiting):** Sunucuyu aşırı yüklememek ve IP adresinin engellenmesini önlemek için istekler arasında gecikme eklenmemiştir. Yüksek frekanslı kullanım için bu bir risk faktörüdür.
+### Requests Modu (Basit):
+- **JavaScript Oluşturulan İçerik:** Bu mod, yalnızca sunucudan gelen ilk HTML yanıtını işleyebilir. Eğer bir web sitesi ürün bilgilerini JavaScript kullanarak sonradan yüklüyorsa (dinamik içerik), bu mod o verileri göremez.
+- **Anti-Bot Engelleri:** Cloudflare, CAPTCHA veya diğer bot koruma sistemlerine karşı savunmasızdır. 403 Forbidden hataları alınabilir.
+
+### Selenium Modu (Gelişmiş):
+- **Performans:** Basit requests moduna göre ~5-10 kat daha yavaştır. Tarayıcı başlatma ve sayfa yükleme süresi ekler.
+- **Kaynak Kullanımı:** ~150-300 MB RAM ve CPU kullanımı. Birden fazla paralel instance için kaynak talebi artar.
+- **Chrome Bağımlılığı:** Sistemde Google Chrome yüklü olmalıdır. Farklı tarayıcılar için kod değişikliği gerekir.
+- **CAPTCHA:** Otomatik CAPTCHA çözme yetenği yoktur. İnsan müdahalesi veya ücretli API servisleri (2captcha) gerekebilir.
+
+### Genel Sınırlamalar:
+- **Hız Sınırlamaları (Rate Limiting):** Sunucuyu aşırı yüklememek için istekler arasında gecikme eklenmemiştir. Yüksek frekanslı kullanım IP engeline yol açabilir.
+- **Yasal ve Etik:** Web sitelerinin Terms of Service'i kazımayı yasaklayabilir. Kullanıcılar yasal sorumluluğu üstlenmelidir.
+- **robots.txt Uyumu:** Program, robots.txt dosyalarını otomatik kontrol etmez. Kullanıcı manuel olarak kontrol etmelidir.

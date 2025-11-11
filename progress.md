@@ -4,8 +4,25 @@
 
 ## Yapılacaklar (TO-DO)
 
-- `[ ]` Selenium veya Playwright gibi tarayıcı otomasyon araçlarını araştır ve entegre et (anti-bot sistemlerini aşmak için).
-- `[ ]` Farklı e-ticaret siteleri için spesifik CSS seçicilerini tanımla ve yapılandırma dosyasına taşı.
+### Selenium Entegrasyonu (Aktif)
+- `[ ]` `requirements.txt` dosyasına `selenium` ve `webdriver-manager` ekle.
+- `[ ]` `scrapers/` klasör yapısını oluştur.
+- `[ ]` `base_scraper.py` soyut sınıfını yaz (abstract base class).
+- `[ ]` Mevcut kodu `requests_scraper.py` modülüne taşı ve refactor et.
+- `[ ]` `selenium_scraper.py` modülünü oluştur (WebDriver yönetimi, bekleme stratejileri).
+- `[ ]` `config/sites_config.json` dosyasını oluştur (Hepsiburada, Trendyol, N11 için seçiciler).
+- `[ ]` Ana `scraper.py` dosyasını hibrit mimariye göre güncelle (mod seçimi, factory pattern).
+- `[ ]` Selenium ile Hepsiburada'dan veri çekmeyi test et.
+- `[ ]` Trendyol ve N11 için test et ve CSS seçicilerini ayarla.
+- `[ ]` Headless mod desteği ekle ve test et.
+- `[ ]` Kullanıcı dokümantasyonunu güncelle (README.md).
+- `[ ]` Tüm değişiklikleri commit edip GitHub'a push et.
+
+### Gelecek Geliştirmeler
+- `[ ]` CSV/JSON çıktı formatları ekle.
+- `[ ]` Daha fazla veri alanı ekle (ürün puanı, yorum sayısı, resim URL'si).
+- `[ ]` Rate limiting (istekler arası gecikme) ekle.
+- `[ ]` Unit testler yaz.
 
 ## Tamamlananlar (DONE)
 
@@ -28,6 +45,10 @@
 - `[X]` Hepsiburada, Trendyol, N11 sitelerini varsayılan olarak öneren ve manuel girişe izin veren kullanıcı arayüzü eklendi.
 - `[X]` Bellek bankası ve ReadMe güncellemeleri yapıldı.
 - `[X]` HTTP hata kodlarına göre detaylı ve açıklayıcı hata mesajları eklendi (403, 404, 429, 5xx, timeout, connection error).
+- `[X]` Selenium vs Playwright araştırması yapıldı, Selenium seçildi.
+- `[X]` Selenium entegrasyon planı oluşturuldu (`memory-bank/selenium_integration_plan.md`).
+- `[X]` Hibrit mimari tasarımı tamamlandı (Requests + Selenium).
+- `[X]` Bellek bankası dosyaları Selenium entegrasyonu için güncellendi (`activeContext.md`, `systemPatterns.md`, `techContext.md`, `progress.md`).
 
 ## Bilinen Sorunlar (BUGS)
 

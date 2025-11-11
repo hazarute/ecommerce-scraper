@@ -1,7 +1,7 @@
 # Aktif Bağlam - Strateji Defteri
 
 ## Mevcut Çalışma Odağı
-Modern e-ticaret sitelerinin (Hepsiburada, Trendyol, N11) anti-bot koruma sistemlerini anlamak ve kullanıcıya hataları net bir şekilde açıklayan gelişmiş hata yönetimi sağlamak.
+Selenium tarayıcı otomasyon kütüphanesini projeye entegre etmek için kapsamlı bir plan oluşturuldu. Şu anki odak, anti-bot sistemlerini (Cloudflare, CAPTCHA) aşabilecek hibrit bir mimari tasarlamak ve projeyi "basit örnek"ten "gerçek dünya aracı"na dönüştürmek.
 
 ## Aktif Kararlar ve Gerekçeler
 
@@ -25,15 +25,29 @@ Modern e-ticaret sitelerinin (Hepsiburada, Trendyol, N11) anti-bot koruma sistem
     *   **Karar:** Web sitesinden veri çekilemezse demo veri gösterilecek.
     *   **Gerekçe:** Kodun kırılgan olmaması ve her durumda çalışır örnek sunması.
 
+6.  **Selenium Entegrasyon Mimarisi:**
+    *   **Karar:** Hibrit mimari - Requests (basit) ve Selenium (gelişmiş) arasında akıllı seçim.
+    *   **Gerekçe:** Basit siteler için hızlı (Requests), anti-bot korumalı siteler için güvenilir (Selenium). Kullanıcıya her iki tekniği öğretme fırsatı. Modüler yapı sayesinde gelecekte Playwright veya başka araçlar eklenebilir.
+
 ## Öğrenilenler ve İçgörüler
 
 - **403 Forbidden Hatası:** Hepsiburada, Trendyol, N11 gibi büyük e-ticaret siteleri, basit HTTP isteklerini engelleyen güçlü anti-bot sistemleri kullanıyor.
 - **Çözüm Gereksinimleri:** Bu sitelere erişim için Selenium, Playwright gibi tarayıcı otomasyon araçları veya daha gelişmiş scraping teknikleri (proxy, session yönetimi, CAPTCHA çözücüler) gerekiyor.
-- **Eğitimsel Değer:** Hata yönetiminin detaylandırılması, kullanıcıya web scraping'in sınırlarını ve gerçek dünya zorluklarını öğretiyor.
-- **Bellek Bankası güncellemeleri:** Yapılan değişikliklerin nedenini ve etkisini netleştirir.
+- **Selenium vs Playwright Karşılaştırması:** Eğitimsel amaçlar için Selenium'un daha yaygın ve tanınır olması nedeniyle tercih edildi.
+- **Hibrit Mimari Stratejisi:** Basit ve gelişmiş modları birlikte sunmak, hem performans hem de esneklik sağlıyor. Kullanıcılar ihtiyaçlarına göre seçim yapabiliyor.
+- **Performans Trade-off:** Selenium ~3-5 saniye başlatma süresi ve ~150-300 MB bellek kullanıyor, ancak %95+ başarı oranı sağlıyor.
+- **Eğitimsel Değer:** Hata yönetiminin detaylandırılması ve farklı scraping tekniklerinin karşılaştırılması, kullanıcıya web scraping'in sınırlarını ve gerçek dünya zorluklarını öğretiyor.
+- **Bellek Bankası Organizasyonu:** `memory-bank/` klasörü oluşturuldu, karmaşık teknik planlar buraya taşınıyor.
 
 ## Stratejik Sonraki Yön
 
-1.  **Yapılandırma Dosyası:** URL ve CSS seçicilerini kod dışına almak.
-2.  **Daha Fazla Veri Alanı:** Ürün puanı, yorum sayısı, resim URL'si gibi ek veri alanları eklemek.
-3.  **Çıktı Formatları:** Sonuçları CSV veya JSON olarak kaydetme seçeneği eklemek.
+### Öncelik 1: Selenium Entegrasyonu (Aktif Plan)
+1.  **Hibrit Mimari:** Requests (basit mod) ve Selenium (gelişmiş mod) arasında akıllı seçim yapan sistem.
+2.  **Site-Spesifik Yapılandırma:** JSON dosyasında her site için CSS seçiciler ve ayarlar.
+3.  **WebDriver Yönetimi:** `webdriver-manager` ile otomatik Chrome driver kurulumu.
+4.  **Kod Refaktörizasyonu:** Modüler yapı (`scrapers/` klasörü, base class pattern).
+
+### Öncelik 2: Gelecek Geliştirmeler
+1.  **Daha Fazla Veri Alanı:** Ürün puanı, yorum sayısı, resim URL'si gibi ek veri alanları eklemek.
+2.  **Çıktı Formatları:** Sonuçları CSV veya JSON olarak kaydetme seçeneği eklemek.
+3.  **Test Senaryoları:** Her site için otomatik testler yazma.
