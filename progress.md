@@ -4,14 +4,10 @@
 
 ## Yapılacaklar (TO-DO)
 
-# Tüm görevler tamamlandı.
-
-
+- `[ ]` Selenium veya Playwright gibi tarayıcı otomasyon araçlarını araştır ve entegre et (anti-bot sistemlerini aşmak için).
+- `[ ]` Farklı e-ticaret siteleri için spesifik CSS seçicilerini tanımla ve yapılandırma dosyasına taşı.
 
 ## Tamamlananlar (DONE)
-- `[X]` Ana program akışı (main block) oluşturularak tüm fonksiyonlar bir araya getirildi.
-+ `[X]` Hepsiburada, Trendyol, N11 sitelerini varsayılan olarak öneren ve manuel girişe izin veren kullanıcı arayüzü eklendi.
-+ `[X]` Bellek bankası ve ReadMe güncellemeleri yapıldı.
 
 - `[X]` Proje hedeflerini ve kurallarını anlamak için `ReadMe.md` ve `Rules_MemoryBank.md` dosyaları incelendi.
 - `[X]` `projectbrief.md` oluşturuldu.
@@ -29,7 +25,10 @@
 - `[X]` Çıkarılan verileri terminalde formatlı bir şekilde yazdıran fonksiyon oluşturuldu.
 - `[X]` Veri çekme başarısız olduğunda kullanılacak demo veriler tanımlandı.
 - `[X]` Ana program akışı (main block) oluşturularak tüm fonksiyonlar bir araya getirildi.
+- `[X]` Hepsiburada, Trendyol, N11 sitelerini varsayılan olarak öneren ve manuel girişe izin veren kullanıcı arayüzü eklendi.
+- `[X]` Bellek bankası ve ReadMe güncellemeleri yapıldı.
+- `[X]` HTTP hata kodlarına göre detaylı ve açıklayıcı hata mesajları eklendi (403, 404, 429, 5xx, timeout, connection error).
 
 ## Bilinen Sorunlar (BUGS)
 
-- Henüz kod yazılmadığı için bilinen bir sorun bulunmamaktadır.
+- `[!]` **403 Forbidden Hatası:** Hepsiburada, Trendyol, N11 gibi siteler anti-bot koruması kullanıyor. Basit HTTP istekleri engellenebilir. Selenium/Playwright gibi araçlar gerekebilir.

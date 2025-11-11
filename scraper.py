@@ -64,8 +64,35 @@ def fetch_page_content(url, headers):
         # HTTP 200 OK durum kodunu kontrol et
         response.raise_for_status()
         return response.text
+    except requests.exceptions.HTTPError as e:
+        # HTTP hata kodlarına göre özel mesajlar
+        status_code = e.response.status_code
+        if status_code == 403:
+            print(f"\n❌ HATA 403 (Forbidden): Web sitesi erişimi engelledi.")
+            print("   Sebep: Site, isteğinizi bot olarak algıladı ve erişimi engelledi.")
+            print("   Çözüm: Bu siteler, Cloudflare, CAPTCHA veya diğer anti-bot sistemleri kullanıyor.")
+            print("   Not: Basit HTTP istekleri ile bu sitelere erişim mümkün değildir.")
+            print("   Alternatif: Selenium gibi tarayıcı otomasyon araçları gerekebilir.")
+        elif status_code == 404:
+            print(f"\n❌ HATA 404 (Not Found): Sayfa bulunamadı.")
+            print("   URL'yi kontrol edin.")
+        elif status_code == 429:
+            print(f"\n❌ HATA 429 (Too Many Requests): Çok fazla istek gönderildi.")
+            print("   Lütfen bir süre bekleyip tekrar deneyin.")
+        elif status_code >= 500:
+            print(f"\n❌ HATA {status_code} (Server Error): Sunucu hatası.")
+            print("   Web sitesinin sunucusunda bir sorun var.")
+        else:
+            print(f"\n❌ HTTP Hatası {status_code}: {e}")
+        return None
+    except requests.exceptions.ConnectionError:
+        print(f"\n❌ Bağlantı Hatası: İnternet bağlantınızı kontrol edin veya URL geçersiz.")
+        return None
+    except requests.exceptions.Timeout:
+        print(f"\n❌ Zaman Aşımı Hatası: Sunucu 10 saniye içinde yanıt vermedi.")
+        return None
     except requests.RequestException as e:
-        print(f"Hata: Web sitesine ulaşılamadı. ({e})")
+        print(f"\n❌ Beklenmeyen Hata: {type(e).__name__} - {e}")
         return None
 
 def parse_products(html_content):
