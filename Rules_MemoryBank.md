@@ -106,4 +106,39 @@ flowchart TD
 
 Not: **bellek bankasını güncelle** tetiklediğinde, bazıları güncelleme gerektirmese bile TÜM bellek bankası dosyalarını gözden geçirmeliyim. Özellikle mevcut durumu takip eden activeContext.md ve progress.md dosyalarına odaklanın.
 
+## Özel Komutlar
+
+Bu komutlar, standart iş akışlarını hızlandırmak için tasarlanmıştır. Prompt'ta bu komutlardan biriyle başlandığında, belirtilen özel süreci takip ederim.
+
+### **`DEVAM ET`**
+Bu komut verildiğinde, sürecim şu şekilde işler:
+1.  **Belleği Yükle:** Her zaman olduğu gibi TÜM Bellek Bankası dosyalarını okurum.
+2.  **Bağlamı Anla:** `activeContext.md` dosyasını analiz ederek mevcut stratejik odağı ve zihinsel durumu anlarım.
+3.  **Görevi Belirle:** `progress.md` dosyasını inceler ve listedeki ilk tamamlanmamış (`[ ]`) görevi mevcut odak olarak belirlerim.
+4.  **Harekete Geç:** Belirlenen görev üzerinde çalışmaya başlarım ve bu süreci "Hareket Modu" kurallarına göre yürütürüm.
+
+### **`DEĞİŞİKLİKLERİ İŞLE`**
+Bu komut, oturum sırasında tamamlanan işlerin veya alınan kararların Bellek Bankası'na kaydedilmesini sağlar. Süreç şöyledir:
+1.  **Genel Değerlendirme:** O anki sohbetimizdeki tüm yeni bilgileri, tamamlanan görevleri, alınan kararları ve ortaya çıkan içgörüleri değerlendiririm.
+2.  **Güncelleme Sürecini Başlat:** "Dokümantasyon Güncellemeleri" bölümünde tanımlanan süreci A'dan Z'ye uygularım.
+3.  **Dosyaları Güncelle:**
+    * **`progress.md`:** Tamamlanan görevleri `[X]` olarak işaretlerim. Varsa yeni görevler veya bug'lar eklerim.
+    * **`activeContext.md`:** Alınan kararları, nedenlerini ve öğrenilenleri bu dosyaya işlerim. Bir sonraki stratejik adımı belirlerim.
+    * **Diğer Dosyalar:** Eğer sisteme kalıcı bir mimari desen (`systemPatterns.md`) veya yeni bir teknoloji (`techContext.md`) eklendiyse, ilgili dosyaları güncellerim.
+4.  **Onay:** Tüm dosyaları güncelledikten sonra Bellek Bankası'nın güncel durumunu özetleyerek size bilgi veririm.
+
+### **`DURUM RAPORU`**
+Bu komut, projenin anlık bir fotoğrafını çekmek için kullanılır. Herhangi bir dosyayı GÜNCELLEMEM. Süreç şöyledir:
+1.  **Belleği Oku:** `activeContext.md` ve `progress.md` dosyalarını okurum.
+2.  **Stratejiyi Özetle:** Mevcut çalışma odağı, son alınan önemli kararlar ve bir sonraki stratejik yön hakkında `activeContext.md`'den bilgi veririm.
+3.  **İlerlemeyi Özetle:** `progress.md`'ye göre sıradaki birkaç "Yapılacak" görevi, son tamamlananları ve bilinen kritik hataları listelerim.
+
+### **`YENİDEN PLANLA`**
+Projenin yönünde bir değişiklik olduğunda veya mevcut stratejiyi yeniden gözden geçirme ihtiyacı doğduğunda kullanılır.
+1.  **Mevcut Çalışmayı Durdur:** O an üzerinde çalıştığım tüm görevleri askıya alırım.
+2.  **Planlama Moduna Geç:** "Planlama Modu" akışını başlatırım.
+3.  **Yeni Hedefleri Anla:** Sizden yeni hedefleri, öncelikleri ve gereksinimleri anlatmanızı isterim.
+4.  **Etki Analizi:** Bu değişikliklerin Bellek Bankası'ndaki hangi dosyaları (özellikle `projectbrief.md`, `productContext.md` ve `activeContext.md`) etkileyeceğini analiz ederim.
+5.  **Güncelleme Planı Sun:** Bellek Bankası'nı yeni stratejiye göre nasıl güncelleyeceğime dair bir plan sunarım ve onayınızı beklerim.
+
 UNUTMAYIN: Her bellek sıfırlanmasından sonra tamamen sıfırdan başlarım. Bellek Bankası, önceki çalışmalarımla olan tek bağlantımdır. Etkinliğim tamamen onun doğruluğuna bağlı olduğundan, kesinlik ve netlikle korunmalıdır.

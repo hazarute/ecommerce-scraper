@@ -110,7 +110,10 @@ Fetching products from 'https://www.hepsiburada.com/' ...
    Price: 32.499 ₺
 --------------------------------------------------
 ...
-```
+
+## Usage
+
+- https://www.loom.com/share/b032cc8c4a40427485de140f8e9f3d10
 
 ## ⚠️ Important Disclaimer
 
@@ -256,7 +259,10 @@ Seçiminiz (1/2/3/4): 1
    Fiyat: 32.499 ₺
 --------------------------------------------------
 ...
-```
+
+## Demo Videosu Linki
+
+- https://www.loom.com/share/b032cc8c4a40427485de140f8e9f3d10
 
 ## ⚠️ Önemli Uyarı
 
