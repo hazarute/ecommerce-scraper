@@ -3,10 +3,10 @@
     "url": "https://www.hepsiburada.com/",
     "method": "selenium",
     "selectors": {
-      "product_container": "div.product-list",
-      "product_item": "li.productListContent-item",
-      "product_name": "h3.product-title",
-      "product_price": "span.price-value"
+  "product_container": null,
+  "product_item": "article.horizontalProductCard-module_article__mzi-M",
+  "product_name": "span.title-module_titleText__8FlNQ",
+  "product_price": "div.price-module_finalPrice__LtjvY"
     },
     "wait_time": 5
   },

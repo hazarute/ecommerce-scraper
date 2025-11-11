@@ -60,8 +60,18 @@ def main():
         wait_time = site_conf.get("wait_time", 5)
     elif secim == str(len(site_keys)+1):
         url = input("Lütfen bir e-ticaret ürün listeleme sayfası URL'si girin: ").strip()
-        selectors = {}
-        wait_time = 5
+        print("Manuel URL için hangi sitenin selectorlarını kullanmak istersiniz?")
+        for idx, key in enumerate(site_keys, 1):
+            print(f"{idx}) {key.title()} ({config[key]['url']})")
+        site_sec = input(f"Seçiminiz (1/{len(site_keys)}): ").strip()
+        if site_sec and site_sec.isdigit() and 1 <= int(site_sec) <= len(site_keys):
+            site_key = site_keys[int(site_sec)-1]
+            site_conf = config[site_key]
+            selectors = site_conf["selectors"]
+            wait_time = site_conf.get("wait_time", 5)
+        else:
+            selectors = {}
+            wait_time = 5
     else:
         site_key = site_keys[0]
         site_conf = config[site_key]

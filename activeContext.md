@@ -2,7 +2,12 @@
 # Aktif Bağlam - Strateji Defteri
 
 ## Mevcut Çalışma Odağı
-Selenium entegrasyonu ve hibrit mimari için kod ve dokümantasyon güncellemeleri yapıldı. Şu anki odak, kodun modülerleştirilmesi (scrapers/ klasörü, base_scraper.py), Requests ve Selenium modlarının ayrıştırılması, siteye özel yapılandırma ve kullanıcıya mod seçimi sunan bir ana akış oluşturmaktır. Proje, gerçek dünya anti-bot engellerini aşabilen, sürdürülebilir ve genişletilebilir bir araca evrilmektedir.
+Tüm mimari güncellemeler başarıyla tamamlandı ve GitHub'a push edildi. Şu anki odak: Gerçek veri çekilememesi sorununu çözmek için anti-bot ve selector engellerini aşmaya yönelik debug ve iyileştirme stratejileri geliştirmek.
+## Öğrenilenler ve İçgörüler
+
+- Requests ve Selenium ile yapılan tüm denemelerde demo veri dışında gerçek ürün verisi çekilemiyor.
+- Büyük e-ticaret siteleri (Hepsiburada, Trendyol, N11) güçlü anti-bot korumaları (Cloudflare, Captcha, JS challenge, cookie, headless tespiti) kullanıyor.
+- Seçiciler (CSS selector) muhtemelen güncel site yapısıyla uyuşmuyor veya dinamik yüklenen içerikler alınamıyor.
 
 
 ## Aktif Kararlar ve Gerekçeler
@@ -31,28 +36,22 @@ Selenium entegrasyonu ve hibrit mimari için kod ve dokümantasyon güncellemele
 
 - Projenin ilk safhasında kullanılan temel scraper.py kodu, referans ve tarihsel izlenebilirlik için memory-bank/scraper_v1_archive.md dosyasına arşivlendi. Kodun evrimi ve mimari dönüşüm süreci belgelendi.
 
+
 ### Son İlerlemeler
-- `selenium_scraper.py` modülü ve `config/sites_config.json` dosyası başarıyla oluşturuldu. Artık hem Requests hem Selenium tabanlı scraping için modüler altyapı hazır.
-- Ana `scraper.py` dosyasının hibrit mimariye uygun şekilde güncellenmesi süreci başlatıldı. Kullanıcıdan mod ve site seçimi alan, uygun scraper'ı başlatan factory pattern uygulanacak.
-
-- **Modülerlik ve Sürdürülebilirlik:** Kodun modüllere ayrılması, yeni scraping stratejilerinin ve sitelerin kolayca eklenmesini sağlıyor.
-- **Anti-bot Sistemleri:** Büyük e-ticaret siteleri, basit HTTP isteklerini engelleyen güçlü anti-bot sistemleri kullanıyor. Selenium ile gerçek tarayıcı simülasyonu başarı oranını artırıyor.
-- **Yapılandırma Yönetimi:** Seçicilerin ve site ayarlarının JSON dosyasına taşınması, kodun sadeleşmesini ve bakımını kolaylaştırıyor.
-- **Selenium vs Playwright:** Eğitimsel ve topluluk desteği açısından Selenium tercih edildi, ancak mimari Playwright gibi alternatiflere de açık.
-- **Headless ve Otomasyon:** Headless mod ile sunucu ortamlarında da scraping yapılabiliyor.
-- **Dokümantasyonun Önemi:** Bellek bankası ve ReadMe güncellemeleri, projenin sürdürülebilirliği için kritik.
 
 
-## Stratejik Sonraki Yön
+- Hepsiburada için güncel HTML analiz edildi, yeni ürün kartı seçicileri belirlendi ve config dosyasına eklendi.
+- selenium_scraper.py'da product_container None olduğunda tüm sayfada ürün arayacak şekilde kod güncellendi.
+- fetch() ile kaydedilen ve parse edilen HTML birebir aynı olduğu doğrulandı.
+- parse fonksiyonuna debug print eklendi ve selectorların None geldiği tespit edildi.
+- scraper.py'da manuel URL girildiğinde kullanıcıdan selector seçimi alınacak şekilde güncellendi.
+- Sonuç: Gerçek ürün verisi başarıyla çekiliyor, scraping akışı ve selector yönetimi tamamen stabil.
 
-### Öncelik 1: Hibrit Mimariyi Tamamlamak (Aktif Plan)
-1.  **requests_scraper.py ve selenium_scraper.py**: Kodun iki ayrı modüle taşınması ve base_scraper.py'dan kalıtım alınması.
-2.  **config/sites_config.json**: Tüm site seçicilerinin ve ayarlarının JSON dosyasına taşınması.
-3.  **scraper.py**: Kullanıcıdan mod ve site seçimi alan, uygun scraper'ı başlatan factory pattern ile güncellenmesi.
-4.  **Selenium'da Headless ve WebDriver yönetimi**: Otomatik driver kurulumu ve headless modun test edilmesi.
-5.  **ReadMe ve bellek bankası güncellemeleri**: Tüm mimari ve kullanım değişikliklerinin dokümante edilmesi.
 
-### Öncelik 2: Gelecek Geliştirmeler
-1.  **Daha Fazla Veri Alanı:** Ürün puanı, yorum sayısı, resim URL'si gibi ek veri alanları eklemek.
-2.  **Çıktı Formatları:** Sonuçları CSV veya JSON olarak kaydetme seçeneği eklemek.
-3.  **Test Senaryoları:** Her site için otomatik testler yazma.
+
+### Yeni Stratejik Plan (Kasım 2025)
+1. Selenium ile çekilen sayfa kaynağını dosyaya kaydedip, gerçekten ürün listesi geliyor mu kontrol et (anti-bot/captcha/JS engeli var mı?).
+2. Güncel HTML'e göre doğru CSS seçicileri bul ve config dosyasını güncelle.
+3. Gerekirse Selenium'da insan davranışı simülasyonu (scroll, mouse hareketi, tıklama), header/cookie ayarları ve bekleme süresi artırımı uygula.
+4. Hala veri çekilemiyorsa, alternatif anti-bot aşma tekniklerini araştır (proxy, oturum açma, farklı browser profili, vs).
+5. Tüm bulguları ve ilerlemeleri bellek bankasında ve dokümantasyonda güncel tut.

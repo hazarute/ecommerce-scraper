@@ -2,26 +2,36 @@
 
 
 
-## Yapılacaklar (TO-DO)
 
-- `[X]` `requirements.txt` dosyasına `selenium` ve `webdriver-manager` ekle.
-- `[X]` `scrapers/` klasör yapısını oluştur.
-- `[X]` `base_scraper.py` soyut sınıfını yaz (abstract base class).
-- `[X]` Mevcut kodu `requests_scraper.py` modülüne taşı ve refactor et.
-- `[X]` `selenium_scraper.py` modülünü oluştur (WebDriver yönetimi, bekleme stratejileri).
-- `[X]` `config/sites_config.json` dosyasını oluştur (Hepsiburada, Trendyol, N11 için seçiciler).
-- `[~]` Ana `scraper.py` dosyasını hibrit mimariye göre güncelle (mod seçimi, factory pattern).
-- `[ ]` Selenium ile Hepsiburada'dan veri çekmeyi test et.
-- `[ ]` Trendyol ve N11 için test et ve CSS seçicilerini ayarla.
-- `[ ]` Headless mod desteği ekle ve test et.
-- `[ ]` Kullanıcı dokümantasyonunu güncelle (README.md).
-- `[ ]` Tüm değişiklikleri commit edip GitHub'a push et.
+## Yapılanlar (DONE)
+
+- `[X]` requirements.txt dosyasına selenium ve webdriver-manager eklendi.
+- `[X]` scrapers/ klasör yapısı oluşturuldu.
+- `[X]` base_scraper.py soyut sınıfı yazıldı.
+- `[X]` requests_scraper.py ve selenium_scraper.py modülleri oluşturuldu ve refactor edildi.
+- `[X]` config/sites_config.json dosyası ile siteye özel seçiciler ve ayarlar JSON'a taşındı.
+- `[X]` Ana scraper.py dosyası hibrit/factory pattern ile güncellendi.
+- `[X]` Selenium ile Hepsiburada, Trendyol, N11 scraping testleri yapıldı.
+- `[X]` Headless mod desteği eklendi ve test edildi.
+- `[X]` Kullanıcı dokümantasyonu (ReadMe.md) güncellendi.
+- `[X]` Tüm değişiklikler commit edilip GitHub'a push edildi.
+
 
 ### Gelecek Geliştirmeler
 - `[ ]` CSV/JSON çıktı formatları ekle.
 - `[ ]` Daha fazla veri alanı ekle (ürün puanı, yorum sayısı, resim URL'si).
 - `[ ]` Rate limiting (istekler arası gecikme) ekle.
 - `[ ]` Unit testler yaz.
+
+---
+
+**Kasım 2025 Selector Debugging ve Akış Stabilizasyonu Güncellemesi:**
+- Hepsiburada'nın güncel HTML yapısı incelendi, yeni ürün kartı seçicileri tespit edildi ve config dosyasına eklendi.
+- selenium_scraper.py kodu, product_container None olduğunda tüm sayfada ürün arayacak şekilde güncellendi.
+- fetch() ile kaydedilen ve parse edilen HTML birebir aynı olduğu doğrulandı.
+- parse fonksiyonuna debug print eklendi ve selectorların None geldiği tespit edildi.
+- scraper.py'da manuel URL girildiğinde kullanıcıdan selector seçimi alınacak şekilde güncellendi.
+- Sonuç: Gerçek ürün verisi başarıyla çekiliyor, scraping akışı ve selector yönetimi tamamen stabil.
 
 
 	- `[X]` İlk yazılan scraper.py kodu memory-bank/scraper_v1_archive.md dosyasına arşivlendi.

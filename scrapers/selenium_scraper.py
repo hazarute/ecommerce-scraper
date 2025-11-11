@@ -1,7 +1,10 @@
 from .base_scraper import BaseScraper
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 import time
@@ -26,34 +29,62 @@ class SeleniumScraper(BaseScraper):
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument(f"user-agent={self.selectors.get('user_agent', 'Mozilla/5.0')}")
         try:
-            driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=options)
             driver.get(self.url)
-            time.sleep(self.wait_time)  # Sayfanın ve JS'nin yüklenmesi için bekle
+            # Ürün kartı selectorunu configten al
+            item_sel = self.selectors.get('product_item', None)
+            if item_sel:
+                # Sadece ilk class'ı al (noktasız)
+                first_class = item_sel.split('.')[-1]
+                try:
+                    WebDriverWait(driver, self.wait_time).until(
+                        EC.presence_of_element_located((By.CLASS_NAME, first_class))
+                    )
+                except Exception as e:
+                    print(f"[SeleniumScraper UYARI]: WebDriverWait ile ürün kartı beklenirken hata: {e}")
+            else:
+                time.sleep(self.wait_time)
             html = driver.page_source
+            # Debug: Sayfa kaynağını dosyaya kaydet
+            with open('last_page_source.html', 'w', encoding='utf-8') as f:
+                f.write(html)
             driver.quit()
+            # Kaydedilen dosya ile dönen html aynı mı?
+            with open('last_page_source.html', 'r', encoding='utf-8') as f:
+                saved_html = f.read()
+            if html == saved_html:
+                print('[DEBUG] fetch() dönen html ile kaydedilen last_page_source.html birebir aynı.')
+            else:
+                print('[DEBUG] fetch() dönen html ile kaydedilen last_page_source.html FARKLI!')
             return html
         except Exception as e:
             self.last_error = str(e)
+            print(f"[SeleniumScraper HATA]: {self.last_error}")
             return None
 
     def parse(self, html_content):
         if not html_content:
+            print('[DEBUG-parse] html_content boş!')
             return []
         soup = BeautifulSoup(html_content, "lxml")
         products = []
-        container_sel = self.selectors.get('product_container', None)
         item_sel = self.selectors.get('product_item', None)
         name_sel = self.selectors.get('product_name', None)
         price_sel = self.selectors.get('product_price', None)
-        if not (container_sel and item_sel and name_sel and price_sel):
+        print(f'[DEBUG-parse] Selectorlar: item={item_sel}, name={name_sel}, price={price_sel}')
+        if not (item_sel and name_sel and price_sel):
+            print('[DEBUG-parse] Selectorlar eksik!')
             return []
-        container = soup.select_one(container_sel) if container_sel else soup
-        product_elements = container.select(item_sel) if container else []
-        for element in product_elements[:5]:
+        product_elements = soup.select(item_sel)
+        print(f'[DEBUG-parse] Bulunan ürün kartı: {len(product_elements)}')
+        for idx, element in enumerate(product_elements[:5]):
             name_element = element.select_one(name_sel)
             price_element = element.select_one(price_sel)
+            name = name_element.get_text(strip=True) if name_element else 'YOK'
+            price = price_element.get_text(strip=True) if price_element else 'YOK'
+            print(f'[DEBUG-parse] {idx+1}. ürün: {name} | {price}')
             if name_element and price_element:
-                name = name_element.get_text(strip=True)
-                price = price_element.get_text(strip=True)
                 products.append({"name": name, "price": price})
+        print(f'[DEBUG-parse] Sonuç ürün sayısı: {len(products)}')
         return products
