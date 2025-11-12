@@ -67,24 +67,134 @@ class SeleniumScraper(BaseScraper):
         if not html_content:
             print('[DEBUG-parse] html_content boş!')
             return []
+        # Siteye göre ilgili parse fonksiyonunu çağır
+        site = self.selectors.get('site', '').lower()
+        if site == 'hepsiburada':
+            return self.parse_hepsiburada(html_content)
+        elif site == 'n11':
+            return self.parse_n11(html_content)
+        elif site == 'trendyol':
+            return self.parse_trendyol(html_content)
+        else:
+            print(f'[DEBUG-parse] Bilinmeyen site: {site}, varsayılan parse kullanılacak.')
+            return self.parse_default(html_content)
+
+    def parse_hepsiburada(self, html_content):
+        soup = BeautifulSoup(html_content, "lxml")
+        products = []
+        import json
+        json_ld_tags = soup.find_all('script', type='application/ld+json')
+        found = False
+        for tag in json_ld_tags:
+            try:
+                data = json.loads(tag.string)
+            except Exception as e:
+                continue
+            if isinstance(data, dict) and data.get('@type') == 'ItemList' and 'itemListElement' in data:
+                items = data.get('itemListElement', [])
+                for idx, item in enumerate(items[:20]):
+                    prod = item.get('item', {})
+                    name = prod.get('name', 'YOK')
+                    offers = prod.get('offers', {})
+                    price = offers.get('price', 'YOK')
+                    print(f'[DEBUG-parse][json-ld] {idx+1}. ürün: {name} | {price}')
+                    products.append({"name": name, "price": price})
+                found = True
+                break
+        if not found:
+            print('[DEBUG-parse][json-ld] Doğru ItemList JSON-LD scripti bulunamadı!')
+        print(f'[DEBUG-parse][json-ld] Sonuç ürün sayısı: {len(products)}')
+        return products
+
+    def parse_n11(self, html_content):
         soup = BeautifulSoup(html_content, "lxml")
         products = []
         item_sel = self.selectors.get('product_item', None)
         name_sel = self.selectors.get('product_name', None)
         price_sel = self.selectors.get('product_price', None)
-        print(f'[DEBUG-parse] Selectorlar: item={item_sel}, name={name_sel}, price={price_sel}')
+        print(f'[DEBUG-parse][n11] Selectorlar: item={item_sel}, name={name_sel}, price={price_sel}')
         if not (item_sel and name_sel and price_sel):
-            print('[DEBUG-parse] Selectorlar eksik!')
+            print('[DEBUG-parse][n11] Selectorlar eksik!')
             return []
         product_elements = soup.select(item_sel)
-        print(f'[DEBUG-parse] Bulunan ürün kartı: {len(product_elements)}')
-        for idx, element in enumerate(product_elements[:5]):
+        print(f'[DEBUG-parse][n11] Bulunan ürün kartı: {len(product_elements)}')
+        for idx, element in enumerate(product_elements[:20]):
             name_element = element.select_one(name_sel)
             price_element = element.select_one(price_sel)
             name = name_element.get_text(strip=True) if name_element else 'YOK'
             price = price_element.get_text(strip=True) if price_element else 'YOK'
-            print(f'[DEBUG-parse] {idx+1}. ürün: {name} | {price}')
+            print(f'[DEBUG-parse][n11] {idx+1}. ürün: {name} | {price}')
             if name_element and price_element:
                 products.append({"name": name, "price": price})
-        print(f'[DEBUG-parse] Sonuç ürün sayısı: {len(products)}')
+        print(f'[DEBUG-parse][n11] Sonuç ürün sayısı: {len(products)}')
+        return products
+
+    def parse_trendyol(self, html_content):
+        soup = BeautifulSoup(html_content, "lxml")
+        products = []
+        import json
+        # Önce JSON-LD'den ürünleri çekmeye çalış
+        json_ld_tags = soup.find_all('script', type='application/ld+json')
+        found = False
+        for tag in json_ld_tags:
+            try:
+                data = json.loads(tag.string)
+            except Exception as e:
+                continue
+            if isinstance(data, dict) and data.get('@type') == 'ItemList' and 'itemListElement' in data:
+                items = data.get('itemListElement', [])
+                for idx, item in enumerate(items[:20]):
+                    prod = item.get('item', {})
+                    name = prod.get('name', 'YOK')
+                    offers = prod.get('offers', {})
+                    price = offers.get('price', 'YOK')
+                    print(f'[DEBUG-parse][trendyol][json-ld] {idx+1}. ürün: {name} | {price}')
+                    products.append({"name": name, "price": price})
+                found = True
+                break
+        if found:
+            print(f'[DEBUG-parse][trendyol][json-ld] Sonuç ürün sayısı: {len(products)}')
+            return products
+        # JSON-LD bulunamazsa CSS seçicilerle devam et
+        item_sel = self.selectors.get('product_item', None)
+        name_sel = self.selectors.get('product_name', None)
+        price_sel = self.selectors.get('product_price', None)
+        print(f'[DEBUG-parse][trendyol][css] Selectorlar: item={item_sel}, name={name_sel}, price={price_sel}')
+        if not (item_sel and name_sel and price_sel):
+            print('[DEBUG-parse][trendyol][css] Selectorlar eksik!')
+            return []
+        product_elements = soup.select(item_sel)
+        print(f'[DEBUG-parse][trendyol][css] Bulunan ürün kartı: {len(product_elements)}')
+        for idx, element in enumerate(product_elements[:20]):
+            name_element = element.select_one(name_sel)
+            price_element = element.select_one(price_sel)
+            name = name_element.get_text(strip=True) if name_element else 'YOK'
+            price = price_element.get_text(strip=True) if price_element else 'YOK'
+            print(f'[DEBUG-parse][trendyol][css] {idx+1}. ürün: {name} | {price}')
+            if name_element and price_element:
+                products.append({"name": name, "price": price})
+        print(f'[DEBUG-parse][trendyol][css] Sonuç ürün sayısı: {len(products)}')
+        return products
+
+    def parse_default(self, html_content):
+        soup = BeautifulSoup(html_content, "lxml")
+        products = []
+        item_sel = self.selectors.get('product_item', None)
+        name_sel = self.selectors.get('product_name', None)
+        price_sel = self.selectors.get('product_price', None)
+        print(f'[DEBUG-parse][default] Selectorlar: item={item_sel}, name={name_sel}, price={price_sel}')
+        if not (item_sel and name_sel and price_sel):
+            print('[DEBUG-parse][default] Selectorlar eksik!')
+            return []
+        product_elements = soup.select(item_sel)
+        print(f'[DEBUG-parse][default] Bulunan ürün kartı: {len(product_elements)}')
+        for idx, element in enumerate(product_elements[:20]):
+            name_element = element.select_one(name_sel)
+            price_element = element.select_one(price_sel)
+            name = name_element.get_text(strip=True) if name_element else 'YOK'
+            price = price_element.get_text(strip=True) if price_element else 'YOK'
+            print(f'[DEBUG-parse][default] {idx+1}. ürün: {name} | {price}')
+            if name_element and price_element:
+                products.append({"name": name, "price": price})
+        print(f'[DEBUG-parse][default] Sonuç ürün sayısı: {len(products)}')
         return products

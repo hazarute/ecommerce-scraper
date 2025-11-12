@@ -22,18 +22,20 @@ A modular and educational Python web scraper that extracts product information f
 
 ## 🚀 Features
 
-- **Hybrid Scraping Modes**: Choose between fast Requests/BeautifulSoup (simple) or Selenium (advanced, anti-bot)
-- **Headless Mode for Selenium**: Run Selenium in headless mode (no browser window) by selecting the option at runtime.
-- **Factory Pattern & Modular Design**: The main script uses a factory pattern to select and instantiate the appropriate scraper module based on user input.
-- **Product Data Extraction**: Scrapes product names and prices from e-commerce sites
-- **Modular & Extensible**: Easily add new sites or scraping strategies (see `scrapers/` folder)
-- **Site-Specific Config**: CSS selectors and settings in `config/sites_config.json`
-- **Error Handling**: Detailed HTTP error messages and fallback demo data
-- **Educational Focus**: Clean, well-documented code for learning
 
-- **Demo Data Fallback**: If scraping fails due to anti-bot measures or selector issues, demo product data is shown.
-- **Memory Bank System**: Project context, progress, and design notes are tracked in the `memory-bank/` folder for transparency and maintainability.
+**Hybrid Scraping Modes**: Choose between fast Requests/BeautifulSoup (simple) or Selenium (advanced, anti-bot)
+**Headless Mode for Selenium**: Run Selenium in headless mode (no browser window) by selecting the option at runtime.
+**Factory Pattern & Modular Design**: The main script uses a factory pattern to select and instantiate the appropriate scraper module based on user input.
+**Product Data Extraction**: Scrapes product names and prices from e-commerce sites
+**Modular & Extensible**: Easily add new sites or scraping strategies (see `scrapers/` folder)
+**Site-Specific Config**: CSS selectors and settings in `config/sites_config.json`
+**Site-Specific Parse Functions**: Each supported site (Hepsiburada, N11, Trendyol) uses a dedicated parse function for robust extraction. Hepsiburada uses advanced JSON-LD parsing for real product data, while N11 and Trendyol use custom selector logic.
+**Automatic Selector Management**: The scraper auto-selects the correct site and selectors for manual URLs, reducing user error and improving reliability.
+**Debug & Test Output**: Detailed debug prints and saved page sources help troubleshoot selector and anti-bot issues. If scraping fails, demo product data is shown.
 
+
+**Demo Data Fallback**: If scraping fails due to anti-bot measures or selector issues, demo product data is shown.
+**Memory Bank System**: Project context, progress, and design notes are tracked in the `memory-bank/` folder for transparency and maintainability.
 ## 📦 Installation
 
 ### Prerequisites
@@ -73,11 +75,12 @@ Press Enter or type 'E' for headless (no browser window), or 'h' to see the brow
 **How it works:**
 1. Prompts you to select scraping mode: Requests (fast, basic) or Selenium (advanced, anti-bot)
 2. Prompts you to select a site (Hepsiburada, Trendyol, N11) or enter a custom URL
-3. Loads site-specific selectors from `config/sites_config.json`
-4. Extracts product names and prices (first 5 products)
-5. Displays results in a formatted table
-
-**If scraping fails (due to anti-bot or selector issues), demo product data will be shown instead.**
+3. Loads site-specific selectors from `config/sites_config.json` and auto-detects site for manual URLs
+4. Uses a dedicated parse function for each site:
+   - **Hepsiburada:** Extracts product names and prices from embedded JSON-LD blocks for maximum reliability
+   - **N11 & Trendyol:** Uses robust CSS selectors and custom logic for dynamic product cards
+5. Debug output and saved page sources help troubleshoot issues; fallback demo data is shown if scraping fails
+6. Displays results in a formatted table
 
 **Modular Structure:**
 - `scrapers/` folder: Contains `base_scraper.py`, `requests_scraper.py`, `selenium_scraper.py`
@@ -174,18 +177,22 @@ Modüler ve eğitici bir Python web kazıyıcı. Hem temel (Requests + Beautiful
 
 ## 🚀 Özellikler
 
-- **Hibrit Kazıma Modları**: Requests/BeautifulSoup (hızlı, basit) veya Selenium (gelişmiş, anti-bot) seçilebilir
-- **Headless Mod (Selenium)**: Selenium, istenirse headless (görünmez) modda çalıştırılabilir. Çalıştırırken sorulur.
-- **Fabrika Deseni & Modüler Yapı**: Ana script, kullanıcıdan alınan moda göre uygun scraper modülünü başlatır.
-- **Ürün Verisi Çekme**: E-ticaret sitelerinden ürün isimleri ve fiyatları çeker
-- **Modüler & Genişletilebilir**: Yeni site veya scraping stratejisi kolayca eklenebilir (`scrapers/` klasörü)
-- **Siteye Özel Ayarlar**: CSS seçiciler ve ayarlar `config/sites_config.json` dosyasında
-- **Hata Yönetimi**: Detaylı HTTP hata mesajları ve yedek demo veri
-- **Eğitici Odaklı**: Temiz ve iyi dokümante edilmiş kod
-- **Demo Veri Desteği**: Anti-bot veya seçici hatası durumunda demo ürün verisi gösterilir.
-- **Bellek Bankası Sistemi**: Proje bağlamı, ilerleme ve mimari notlar `memory-bank/` klasöründe tutulur.
 
-## 📦 Kurulum
+**Hibrit Kazıma Modları**: Requests/BeautifulSoup (hızlı, basit) veya Selenium (gelişmiş, anti-bot) seçilebilir
+**Headless Mod (Selenium)**: Selenium, istenirse headless (görünmez) modda çalıştırılabilir. Çalıştırırken sorulur.
+**Fabrika Deseni & Modüler Yapı**: Ana script, kullanıcıdan alınan moda göre uygun scraper modülünü başlatır.
+**Ürün Verisi Çekme**: E-ticaret sitelerinden ürün isimleri ve fiyatları çeker
+**Modüler & Genişletilebilir**: Yeni site veya scraping stratejisi kolayca eklenebilir (`scrapers/` klasörü)
+**Siteye Özel Ayarlar**: CSS seçiciler ve ayarlar `config/sites_config.json` dosyasında
+**Hata Yönetimi**: Detaylı HTTP hata mesajları ve yedek demo veri
+**Eğitici Odaklı**: Temiz ve iyi dokümante edilmiş kod
+**Siteye Özel Parse Fonksiyonları**: Her desteklenen site (Hepsiburada, N11, Trendyol) için ayrı parse fonksiyonu ile daha sağlam veri çekme. Hepsiburada'da JSON-LD ile gerçek ürün verisi, N11 ve Trendyol'da özel seçici mantığı kullanılır.
+**Otomatik Seçici Yönetimi**: Manuel URL girildiğinde scraper doğru siteyi ve seçicileri otomatik seçer, hata riskini azaltır.
+**Debug & Test Çıktıları**: Detaylı debug print'ler ve kaydedilen sayfa kaynakları ile anti-bot ve seçici sorunları kolayca analiz edilir. Scraping başarısız olursa demo veri gösterilir.
+
+
+**Demo Veri Desteği**: Anti-bot veya seçici hatası durumunda demo ürün verisi gösterilir.
+**Bellek Bankası Sistemi**: Proje bağlamı, ilerleme ve mimari notlar `memory-bank/` klasöründe tutulur.
 
 ### Ön Gereksinimler
 - Python 3.6 veya üzeri
@@ -223,11 +230,12 @@ Enter veya 'E' ile headless (görünmez) modda, 'h' ile tarayıcı penceresi aç
 **Nasıl çalışır?**
 1. Kazıma modu sorulur: Requests (hızlı, temel) veya Selenium (gelişmiş, anti-bot)
 2. Site seçimi (Hepsiburada, Trendyol, N11) veya manuel URL girişi
-3. Siteye özel seçiciler `config/sites_config.json` dosyasından yüklenir
-4. Ürün isimleri ve fiyatları (ilk 5 ürün) çekilir
-5. Sonuçlar terminalde tablo olarak gösterilir
-
-**Eğer scraping başarısız olursa (anti-bot veya seçici hatası), demo ürün verisi gösterilir.**
+3. Siteye özel seçiciler `config/sites_config.json` dosyasından yüklenir ve manuel URL'de site otomatik algılanır
+4. Her site için özel parse fonksiyonu kullanılır:
+   - **Hepsiburada:** Ürün isimleri ve fiyatları JSON-LD bloklarından çekilir (en güvenilir yöntem)
+   - **N11 & Trendyol:** Dinamik ürün kartları için özel CSS seçiciler ve mantık
+5. Debug çıktıları ve kaydedilen sayfa kaynakları ile sorunlar kolayca analiz edilir; scraping başarısız olursa demo veri gösterilir
+6. Sonuçlar terminalde tablo olarak gösterilir
 
 **Modüler Yapı:**
 - `scrapers/` klasörü: `base_scraper.py`, `requests_scraper.py`, `selenium_scraper.py`

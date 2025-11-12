@@ -3,10 +3,10 @@
     "url": "https://www.hepsiburada.com/",
     "method": "selenium",
     "selectors": {
-  "product_container": null,
-  "product_item": "article.horizontalProductCard-module_article__mzi-M",
-  "product_name": "span.title-module_titleText__8FlNQ",
-  "product_price": "div.price-module_finalPrice__LtjvY"
+      "product_container": null,
+      "product_item": "article.horizontalProductCard-module_article__mzi-M",
+      "product_name": "json-ld",
+      "product_price": "json-ld"
     },
     "wait_time": 5
   },
@@ -16,8 +16,9 @@
     "selectors": {
       "product_container": "div.prdct-cntnr-wrppr",
       "product_item": "div.p-card-wrppr",
-      "product_name": "div.p-card-chldrn-cntnr span.prdct-desc-cntnr-ttl",
-      "product_price": "div.prc-box-dscntd"
+      "product_name": "json-ld",
+      "product_price": "json-ld",
+      "site": "trendyol"
     },
     "wait_time": 5
   },
