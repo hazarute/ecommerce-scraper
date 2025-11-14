@@ -13,13 +13,13 @@
  - [X] `pandas` `requirements.txt`'e eklendi.
  - [X] `core/engine.py` eklendi (plugin discovery + run_job).
  - [X] `app.py` Streamlit wireframe eklendi ve commit/push yapıldı.
+ - [X] `utils/exporters.py` eklendi (CSV/JSON exporter).
+ - [X] `app.py` site-config entegrasyonu ile güncellendi (config/sites_config.json).
+ - [X] CI workflow eklendi: `.github/workflows/ci.yml` (smoke import test).
 
 ### Devam Ediyor (IN PROGRESS)
-- [ ] `app.py` Streamlit wireframe ve `core.engine` entegrasyonu.
-- [ ] `utils/exporters.py` ile CSV/JSON exporter'ların uygulanması ve test edilmesi.
-- [ ] Unit testler, linter ve CI pipeline entegrasyonu.
- - [ ] `utils/exporters.py` ile CSV/JSON exporter'ların uygulanması ve test edilmesi.
- - [ ] Unit testler, linter ve CI pipeline entegrasyonu.
+- [ ] Unit testler ve linter kurulumu.
+- [ ] Plugin güvenliği için sandbox/manifest politika taslağı ve testleri.
 
 ### Gelecek (TODO)
 - [ ] Plugin güvenliği için sandbox/manifest politika taslağı ve testleri.

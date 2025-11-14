@@ -16,6 +16,9 @@ Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, 
 	 - `core/engine.py` eklendi: plugin discovery (`discover_plugins`) ve job orchestration (`run_job`) fonksiyonları.
 	 - `app.py` eklendi: minimal Streamlit wireframe — mode seçimi, URL girişi, plugin seçimi ve Run butonu ile sonuç gösterimi + CSV export.
 	 - `requirements.txt` güncellendi: `streamlit` ve `pandas` eklendi.
+   - `utils/exporters.py` eklendi: `export_csv` ve `export_json` fonksiyonları uygulandı.
+   - `app.py` güncellendi: `config/sites_config.json` entegrasyonu eklendi (site presetleri ile selectors doldurma).
+   - CI: `.github/workflows/ci.yml` eklendi — requirements kurulumu ve temel import smoke testi çalıştırılıyor.
 
 ## Kararlar (Onay Bekleyen / Onaylanan)
  - Onaylanan: Bellek bankası güncellendi ve taşınma ile ilgili değişiklikler repoya işlendi.
