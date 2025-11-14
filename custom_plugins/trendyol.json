@@ -1,0 +1,8 @@
+{
+  "selectors": {
+    "product_item": "div.p-card-wrppr",
+    "product_name": "json-ld",
+    "product_price": "json-ld"
+  },
+  "url": "https://www.trendyol.com/laptop-x-c103108"
+}

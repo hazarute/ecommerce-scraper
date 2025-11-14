@@ -4,35 +4,6 @@ from typing import List, Dict, Optional, Tuple
 from pathlib import Path
 import json
 
-
-def _load_plugin_config(plugin_module_name: str) -> dict:
-    """Plugin'in .json config dosyasını yükle.
-    
-    Örnek: 'custom_plugins.example_amazon' ise
-    custom_plugins/example_amazon.json dosyasını açar.
-    
-    Args:
-        plugin_module_name: e.g., "custom_plugins.example_amazon"
-    
-    Returns:
-        dict: Yüklenen config veya boş dict
-    """
-    try:
-        # Module adından dosya adını çıkar
-        plugin_name = plugin_module_name.split('.')[-1]  # "example_amazon"
-        config_path = Path("custom_plugins") / f"{plugin_name}.json"
-        
-        if config_path.exists():
-            with open(config_path, 'r', encoding='utf-8') as f:
-                config = json.load(f)
-            print(f"[Engine] Plugin config yüklendi: {config_path.name}")
-            return config
-    except Exception as e:
-        print(f"[Engine] Plugin config yüklenirken hata ({plugin_module_name}): {e}")
-    
-    return {}
-
-
 def discover_plugins() -> List[Dict]:
     """Discover python modules under `custom_plugins` and return metadata list.
 
@@ -61,7 +32,7 @@ def discover_plugins() -> List[Dict]:
     return plugins
 
 
-def run_job(url: str, mode: str, selectors: dict = None, plugin_module: Optional[str] = None, plugin_config: dict = None, headless: bool = True) -> Tuple[List[Dict], Optional[str]]:
+def run_job(url: str, mode: str, selectors: dict = None, plugin_module: Optional[str] = None, plugin_config: dict = None, headless: bool = True) -> Tuple[list, Optional[str]]:
     """Run a scraping job.
 
     Args:
@@ -75,20 +46,27 @@ def run_job(url: str, mode: str, selectors: dict = None, plugin_module: Optional
     Returns:
         (results_list, error_message)
     """
+
     selectors = selectors or {}
     try:
         if mode == "requests":
-            from core.scrapers.requests_scraper import RequestsScraper
-            scraper = RequestsScraper(url, selectors)
-            html = scraper.fetch()
-            results = scraper.parse(html)
+            from core.scrapers.generic_requests_scraper import run as generic_requests_run
+            results = generic_requests_run(url, selectors)
+            if not isinstance(results, list):
+                try:
+                    results = list(results)
+                except Exception:
+                    results = []
             return results, None
 
         if mode == "selenium":
-            from core.scrapers.selenium_scraper import SeleniumScraper
-            scraper = SeleniumScraper(url, selectors, headless=headless)
-            html = scraper.fetch()
-            results = scraper.parse(html)
+            from core.scrapers.generic_selenium_scraper import run as generic_selenium_run
+            results = generic_selenium_run(url, selectors, headless=headless)
+            if not isinstance(results, list):
+                try:
+                    results = list(results)
+                except Exception:
+                    results = []
             return results, None
 
         if mode == "plugin":
@@ -114,3 +92,19 @@ def run_job(url: str, mode: str, selectors: dict = None, plugin_module: Optional
 
 if __name__ == "__main__":
     print("core.engine module — use discover_plugins() and run_job() from app")
+
+
+def _load_plugin_config(plugin_module_name: str) -> dict:
+    """Plugin'in .json config dosyasını yükler.
+    Örnek: 'custom_plugins.hepsiburada' için 'custom_plugins/hepsiburada.json' dosyasını açar.
+    """
+    try:
+        plugin_name = plugin_module_name.split('.')[-1]
+        config_path = Path("custom_plugins") / f"{plugin_name}.json"
+        if config_path.exists():
+            with open(config_path, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+            return config
+    except Exception as e:
+        print(f"[engine] Plugin config yüklenirken hata: {e}")
+    return {}

@@ -15,15 +15,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Load site configurations
-CONFIG_PATH = Path("config") / "sites_config.json"
-SITE_CONFIGS = {}
-if CONFIG_PATH.exists():
-    try:
-        SITE_CONFIGS = _json.loads(CONFIG_PATH.read_text(encoding='utf-8'))
-    except Exception:
-        SITE_CONFIGS = {}
-
 # Initialize session state for data persistence
 if "scrape_results" not in st.session_state:
     st.session_state.scrape_results = None
@@ -42,46 +33,105 @@ st.markdown("""
 st.markdown("---")
 
 # ================================
-# SIDEBAR CONFIGURATION
+# SIDEBAR CONFIGURATION (PLUGIN-FIRST)
 # ================================
 with st.sidebar:
     st.header("⚙️ İş Ayarları")
-    
-    # Site ve Mode seçimi (temel ayarlar)
-    col_site, col_mode = st.columns(2)
-    with col_site:
-        site_keys = list(SITE_CONFIGS.keys())
-        site_choice = st.selectbox(
-            "🎯 Hedef Site",
-            ["manuel"] + site_keys,
-            help="Kaydedilmiş site presetlerini veya manuel URL girişini seçin."
+
+    # 1. Kazıma Yöntemi Seçimi
+    scrape_method = st.radio(
+        "Kazıma Yöntemi",
+        ["🧩 Siteye Özel Plugin", "🌐 Manuel / Genel"],
+        index=0,
+        help="Plugin ile (önerilen) veya manuel Requests/Selenium ile kazıma"
+    )
+
+    mode = None
+    plugin_choice = None
+    url = ""
+    selectors = None
+    plugin_metadata = None
+
+    if scrape_method == "🧩 Siteye Özel Plugin":
+        # Plugin seçimi
+        plugins = engine.discover_plugins()
+        if plugins:
+            plugin_options = [p.get("module") for p in plugins]
+            plugin_choice = st.selectbox("📦 Plugin Seçimi", plugin_options)
+            # Metadata göster
+            selected_plugin = next((p for p in plugins if p.get("module") == plugin_choice), None)
+            plugin_metadata = selected_plugin.get("metadata") if selected_plugin else {}
+            if plugin_metadata:
+                st.caption(f"**Versiyon:** {plugin_metadata.get('version', '?')}")
+                supported = plugin_metadata.get('supported_sites', [])
+                if supported:
+                    st.info(f"🎯 Desteklenen Siteler: {', '.join(supported)}")
+                desc = plugin_metadata.get('description')
+                if desc:
+                    st.caption(desc)
+            # URL input (örnek varsa placeholder)
+            example_url = ""
+            if plugin_metadata:
+                example_url = plugin_metadata.get("example_url", "")
+            url = st.text_input(
+                "🔗 Hedef URL",
+                value=example_url or "",
+                placeholder=example_url or "https://example.com/products",
+                help="Kazıma yapılacak ürün listeleme sayfası"
+            )
+            mode = "plugin"
+        else:
+            st.warning("📦 Hiçbir plugin yüklenmedi. `custom_plugins/` klasörüne `.py` dosyaları ekleyin.")
+            url = ""
+            mode = None
+
+    elif scrape_method == "🌐 Manuel / Genel":
+        # Requests/Selenium seçimi
+        tech = st.selectbox(
+            "Teknoloji",
+            ["Requests", "Selenium"],
+            help="Requests: hızlı, Selenium: dinamik/anti-bot"
         )
-    
-    with col_mode:
-        mode = st.selectbox(
-            "🔧 Kazıma Modu",
-            ["requests", "selenium", "plugin"],
-            help="requests: Hızlı (statik siteler), selenium: Dinamik siteler, plugin: Özel modüller"
-        )
-    
-    # URL giriş — site seçilmişse varsayılan değer config'den gelir
-    if site_choice != "manuel":
-        site_conf = SITE_CONFIGS.get(site_choice, {})
-        default_url = site_conf.get('url', "https://example.com/")
         url = st.text_input(
-            "🔗 Target URL",
-            value=default_url,
-            help=f"Site: {site_choice} — Config'ten otomatik yüklendi"
-        )
-    else:
-        url = st.text_input(
-            "🔗 Target URL",
-            value="https://example.com/",
+            "🔗 Hedef URL",
+            value="https://example.com/products",
             placeholder="https://example.com/products",
-            help="Manuel URL girişi — selector'ları manuel seçmeniz gerekecek"
+            help="Kazıma yapılacak ürün listeleme sayfası"
         )
-    
-    # Gelişmiş Ayarlar (gizli expander)
+        mode = "requests" if tech == "Requests" else "selenium"
+
+        # Hazır selector şablonları
+        selector_templates = {
+            "Boş (Elle Gir)": {"product_item": "", "product_name": "", "product_price": ""},
+            "N11 (örnek)": {
+                "product_item": "li.column",
+                "product_name": "h3.productName",
+                "product_price": "div.proDetail span.newPrice ins"
+            },
+            "Trendyol (örnek)": {
+                "product_item": "div.p-card-wrppr",
+                "product_name": "div.p-card-chldrn-cntnr span.prdct-desc-cntnr-name.hasRatings",
+                "product_price": "div.prc-box-dscntd"
+            }
+        }
+        selected_template = st.selectbox(
+            "Hazır Selector Şablonu",
+            list(selector_templates.keys()),
+            index=0,
+            help="Bir siteye uygun hazır şablon seçebilir veya elle girebilirsiniz."
+        )
+        default_selectors = selector_templates[selected_template]
+        st.caption("Aşağıdaki alanları doldurun veya şablonu seçin.")
+        product_item = st.text_input("Ürün Kapsayıcı Selector (product_item)", value=default_selectors["product_item"])
+        product_name = st.text_input("Ürün Adı Selector (product_name)", value=default_selectors["product_name"])
+        product_price = st.text_input("Ürün Fiyatı Selector (product_price)", value=default_selectors["product_price"])
+        selectors = {
+            "product_item": product_item,
+            "product_name": product_name,
+            "product_price": product_price
+        }
+
+    # Gelişmiş Ayarlar (her iki modda da)
     with st.expander("⚙️ Gelişmiş Ayarlar"):
         if mode == "selenium":
             headless = st.checkbox("Headless Mode", value=True, help="Tarayıcı penceresini açmaz.")
@@ -89,69 +139,25 @@ with st.sidebar:
         else:
             headless = True
             timeout = 30
-        
         user_agent_preset = st.selectbox(
             "User-Agent Seçimi",
             ["Varsayılan", "Chrome (Desktop)", "Safari (iOS)"],
             help="Sunucu tarafında engelleme riskini azaltır."
         )
-    
-    # Plugin seçimi (mode='plugin' ise görün)
-    plugins = engine.discover_plugins()
-    plugin_choice = None
-    if mode == "plugin":
-        if plugins:
-            plugin_options = [p.get("module") for p in plugins]
-            plugin_choice = st.selectbox("📦 Plugin Seçimi", plugin_options)
-        else:
-            st.warning("📦 Hiçbir plugin yüklenmedi.")
-    
-    # Seçim yapılmış sitenin selector'larını yükle
-    # Eğer site="manuel" ise, URL'den site adını çıkarmaya çalış
-    selectors = {}
-    detected_site = site_choice
-    detected_mode = mode  # Mode da detect edilecek
-    
-    if site_choice == "manuel" and url:
-        # URL'den site adını otomatik algıla
-        if "hepsiburada" in url.lower():
-            detected_site = "hepsiburada"
-            detected_mode = "selenium"  # Hepsiburada Selenium gerektiriyor
-        elif "trendyol" in url.lower():
-            detected_site = "trendyol"
-            detected_mode = "selenium"  # Trendyol Selenium gerektiriyor
-        elif "n11" in url.lower():
-            detected_site = "n11"
-            detected_mode = "selenium"  # N11 bot engelleme var, Selenium şart
-    
-    # Algılanan veya seçilen siteden selector'ları yükle
-    if detected_site != "manuel":
-        site_conf = SITE_CONFIGS.get(detected_site, {})
-        selectors = site_conf.get('selectors', {})
-        selectors['site'] = detected_site
-        
-        # Eğer manuel URL ise ve siteden farklı bir site algılandıysa, bilgi ver
-        if site_choice == "manuel":
-            mode_text = f" (Mod: **{detected_mode.upper()}**)" if detected_mode != mode else ""
-            st.sidebar.info(f"ℹ️ URL'den algılanan site: **{detected_site.upper()}**{mode_text}\n— Seçiciler ve mode otomatik yüklendi")
-    elif site_choice == "manuel":
-        st.sidebar.warning("⚠️ Site algılanamadı. Selector'ları manuel girmeniz gerekecek.")
-    
-    # Override mode if detected
-    mode = detected_mode
-    
+
     st.markdown("---")
-    
-    # RUN Butonu (prominent)
+
+    # RUN Butonu
     run_btn = st.button(
         "🚀 Kazımayı Başlat",
         key="run_scrape",
         type="primary",
-        use_container_width=True
+        use_container_width=True,
+        disabled=(not url or not mode)
     )
-    
+
     st.markdown("---")
-    
+
     # About
     st.markdown("""
     **ℹ️ Hakkında**
@@ -169,88 +175,85 @@ tab1, tab2, tab3 = st.tabs(["🚀 Kazıma Paneli", "🧩 Eklenti Merkezi", "📂
 # TAB 1: SCRAPING PANEL
 # ================================
 with tab1:
-    if run_btn:
+    if run_btn and url and mode:
         # Clear previous results
         st.session_state.scrape_results = None
         st.session_state.last_job_info = {}
-        
+
         # Status container with progress
         with st.status("🔄 İşlem Yapılıyor...", expanded=True) as status:
             try:
-                # Step 1: Site bağlantısı
                 st.write("📍 Hedef siteye bağlanılıyor...")
                 time.sleep(0.5)
-                
-                # Step 2: Veri çekiliyor
                 st.write("📊 Ürün verileri çekiliyor...")
                 time.sleep(0.5)
-                
+
                 # ACTUAL JOB EXECUTION
-                results, err = engine.run_job(
-                    url,
-                    mode,
-                    selectors=selectors,
-                    plugin_module=plugin_choice,
-                    headless=headless
-                )
-                
+                if mode == "plugin":
+                    results, err = engine.run_job(
+                        url,
+                        mode,
+                        selectors={},
+                        plugin_module=plugin_choice,
+                        headless=headless
+                    )
+                else:
+                    # Manuel/generic modda selectors her zaman dict olarak gönderilmeli
+                    # Gelişmiş ayarlardan user-agent ve timeout alınabilir
+                    # Şimdilik user_agent_preset sadece string olarak aktarılıyor
+                    results, err = engine.run_job(
+                        url,
+                        mode,
+                        selectors=selectors,
+                        plugin_module=None,
+                        headless=headless
+                    )
+
                 if err:
                     st.error(f"❌ Hata: {err}")
                     status.update(label="❌ İşlem Başarısız", state="error")
                 else:
-                    # Step 3: Veriler işleniyor
                     st.write("⚙️ Veriler işleniyor...")
                     time.sleep(0.3)
-                    
-                    # Store results in session
                     st.session_state.scrape_results = results
                     st.session_state.last_job_info = {
-                        "site": site_choice,
+                        "site": plugin_choice if mode == "plugin" else "manuel",
                         "mode": mode,
                         "url": url,
                         "count": len(results)
                     }
-                    
-                    # Step 4: Export
                     st.write("💾 Dosyalar kaydediliyor...")
                     exporters.export_csv(results)
                     exporters.export_json(results)
                     time.sleep(0.3)
-                    
                     st.write("✅ Kazıma tamamlandı!")
                     status.update(label="✅ İşlem Başarılı", state="complete")
-            
             except Exception as e:
                 st.error(f"❌ İşlem sırasında hata: {str(e)}")
                 status.update(label="❌ İşlem Başarısız", state="error")
-    
+
     # DISPLAY RESULTS (from session state)
     if st.session_state.scrape_results is not None:
-        st.balloons()
         st.toast("✨ Kazıma başarılı!", icon="✅")
-        
+
         st.markdown("---")
-        
+
         # Metrics row
         results = st.session_state.scrape_results
         job_info = st.session_state.last_job_info
-        
+
         col_metrics = st.columns(4)
         with col_metrics[0]:
             st.metric("📦 Toplam Ürün", job_info.get("count", 0))
-        
+
         if results:
             df = pd.DataFrame(results)
-            
-            # Calculate metrics if price column exists
             if 'price' in df.columns:
                 try:
-                    # Convert to numeric if possible
                     df['price_numeric'] = pd.to_numeric(df['price'], errors='coerce')
                     avg_price = df['price_numeric'].mean()
                     min_price = df['price_numeric'].min()
                     max_price = df['price_numeric'].max()
-                    
                     with col_metrics[1]:
                         st.metric("💰 Ort. Fiyat", f"${avg_price:.2f}" if not pd.isna(avg_price) else "N/A")
                     with col_metrics[2]:
@@ -259,20 +262,17 @@ with tab1:
                         st.metric("📈 En Yüksek", f"${max_price:.2f}" if not pd.isna(max_price) else "N/A")
                 except Exception:
                     pass
-        
+
         st.markdown("---")
-        
+
         # Data table with column configuration
         st.subheader("📋 Sonuç Tablosu")
         if results:
             try:
                 df_display = pd.DataFrame(results)
-                
-                # Configure columns if images exist
                 col_config = {}
                 if 'image_url' in df_display.columns:
                     col_config['image_url'] = st.column_config.ImageColumn("Resim", width="small")
-                
                 st.dataframe(
                     df_display,
                     use_container_width=True,
@@ -280,15 +280,13 @@ with tab1:
                     hide_index=False
                 )
             except Exception as e:
-                # Fallback: show as raw JSON
                 st.json(results)
-        
+
         st.markdown("---")
-        
+
         # Download buttons
         st.subheader("💾 İndirme Seçenekleri")
         col_dl1, col_dl2 = st.columns(2)
-        
         with col_dl1:
             csv_bytes = pd.DataFrame(results).to_csv(index=False).encode('utf-8')
             st.download_button(
@@ -298,7 +296,6 @@ with tab1:
                 mime="text/csv",
                 use_container_width=True
             )
-        
         with col_dl2:
             json_str = _json.dumps(results, indent=2, ensure_ascii=False).encode('utf-8')
             st.download_button(
@@ -314,28 +311,23 @@ with tab1:
 # ================================
 with tab2:
     st.header("🧩 Eklenti Merkezi")
-    
+    plugins = engine.discover_plugins()
     if plugins:
         for idx, plugin in enumerate(plugins):
             with st.container(border=True):
                 module_name = plugin.get("module", "Unknown")
                 metadata = plugin.get("metadata") or {}
-                
                 col_name, col_version = st.columns([3, 1])
                 with col_name:
                     st.subheader(f"📦 {metadata.get('name', module_name)}")
                 with col_version:
                     st.caption(f"v{metadata.get('version', '?')}")
-                
                 st.write(metadata.get('description', 'Açıklama yok'))
-                
-                # Details
                 col_sites, col_status = st.columns(2)
                 with col_sites:
                     supported = metadata.get('supported_sites', [])
                     if supported:
                         st.write(f"🎯 **Desteklenen Siteler:** {', '.join(supported)}")
-                
                 with col_status:
                     st.success("✅ Aktif ve Hazır")
     else:
@@ -346,14 +338,12 @@ with tab2:
 # ================================
 with tab3:
     st.header("📂 Veri Geçmişi")
-    
-    # Check for saved exports
     exports_path = Path("data/exports")
     if exports_path.exists():
         files = sorted(exports_path.glob("*"), key=lambda x: x.stat().st_mtime, reverse=True)
         if files:
             st.success(f"✅ {len(files)} dosya bulundu.")
-            for file in files[:10]:  # Show last 10
+            for file in files[:10]:
                 col_name, col_size, col_action = st.columns([2, 1, 1])
                 with col_name:
                     st.write(f"📄 `{file.name}`")

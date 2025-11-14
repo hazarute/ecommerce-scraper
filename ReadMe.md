@@ -33,9 +33,10 @@ A **modular, extensible, and production-ready** Python web scraper designed to e
 
 ## 🚀 Features
 
+
 ### Core Features
 - **Hybrid Scraping Modes**  
-  Choose between lightweight (Requests + BeautifulSoup) for fast, simple sites or Selenium for anti-bot protection and dynamic content.
+  Choose between lightweight (Requests + BeautifulSoup) for fast, simple sites or Selenium for anti-bot protection and dynamic content. Both generic and plugin-based scraping supported.
 
 - **Streamlit Web Interface**  
   Modern UI for site selection, scraping mode configuration, and real-time job monitoring. No CLI needed.
@@ -43,15 +44,11 @@ A **modular, extensible, and production-ready** Python web scraper designed to e
 - **Plugin Architecture**  
   Add custom scrapers dynamically via `custom_plugins/` folder. Each plugin follows a simple contract: `metadata` dict + `run(url, config) → List[Dict]`.
 
-- **Site-Specific Configuration**  
-  All CSS selectors and site-specific settings centralized in `config/sites_config.json`. Easy to extend for new sites.
-
-- **Site-Specific Parse Functions**  
-  - **Hepsiburada:** JSON-LD parsing for maximum reliability
-  - **N11 & Trendyol:** Custom CSS selectors and parsing logic optimized per site
+- **Selector Management & Generic Scraper Logic**  
+  All CSS selectors and site-specific settings can be managed via plugin `.json` files or manual input. Generic scrapers (requests/selenium) now use a two-step strategy: **first try to extract products from JSON-LD scripts, then fallback to user-provided CSS selectors**. This approach is now used for all sites, not just plugins (e.g. Trendyol, Hepsiburada, N11).
 
 - **Automatic Selector Detection**  
-  Manual URLs are auto-detected and mapped to the correct site and selectors.
+  Manual URLs are auto-detected and mapped to the correct site and selectors, or you can enter selectors manually in the UI.
 
 - **Demo Data Fallback**  
   If scraping fails due to anti-bot measures or selector issues, demo product data is displayed for testing.
@@ -235,32 +232,15 @@ e-commerce-product-scraper/
 
 ## 🔧 Configuration
 
-### Site Configuration (`config/sites_config.json`)
-Define CSS selectors and settings for each e-commerce site:
 
-```json
-{
-  "hepsiburada": {
-    "url": "https://www.hepsiburada.com/",
-    "selectors": {
-      "product_container": "...",
-      "product_name": "...",
-      "product_price": "..."
-    },
-    "parse_function": "parse_hepsiburada"
-  },
-  "trendyol": {
-    "url": "https://www.trendyol.com/",
-    "selectors": {...},
-    "parse_function": "parse_trendyol"
-  },
-  "n11": {
-    "url": "https://www.n11.com/",
-    "selectors": {...},
-    "parse_function": "parse_n11"
-  }
-}
-```
+### Site & Selector Configuration
+You can manage CSS selectors and site-specific settings in three ways:
+
+1. **Plugin .json files:** Each plugin can have its own `.json` config for selectors and settings (recommended for site-specific logic).
+2. **Manual Input via UI:** In generic/manual mode, you can enter selectors directly in the Streamlit UI or select from ready-made templates (e.g. Trendyol, N11, Hepsiburada).
+3. **Legacy config/sites_config.json:** Still supported for backward compatibility, but plugin and UI-based selector management is preferred.
+
+**Generic scrapers (requests/selenium) always try to extract products from JSON-LD scripts first, then fallback to the selectors you provide.**
 
 ### Environment Variables (`.env`)
 For sensitive data like API keys or proxy settings:
@@ -663,32 +643,15 @@ e-commerce-product-scraper/
 
 ## 🔧 Yapılandırma
 
-### Site Yapılandırması (`config/sites_config.json`)
-Her e-ticaret sitesi için CSS seçiciler ve ayarları tanımlayın:
 
-```json
-{
-  "hepsiburada": {
-    "url": "https://www.hepsiburada.com/",
-    "selectors": {
-      "product_container": "...",
-      "product_name": "...",
-      "product_price": "..."
-    },
-    "parse_function": "parse_hepsiburada"
-  },
-  "trendyol": {
-    "url": "https://www.trendyol.com/",
-    "selectors": {...},
-    "parse_function": "parse_trendyol"
-  },
-  "n11": {
-    "url": "https://www.n11.com/",
-    "selectors": {...},
-    "parse_function": "parse_n11"
-  }
-}
-```
+### Site & Selector Yapılandırması
+CSS seçicileri ve siteye özel ayarları üç şekilde yönetebilirsiniz:
+
+1. **Plugin .json dosyaları:** Her plugin kendi `.json` config dosyasına sahip olabilir (siteye özel mantık için önerilir).
+2. **Arayüzden Manuel Giriş:** Generic/manuel modda, Streamlit UI üzerinden seçicileri elle girebilir veya hazır şablonlardan (örn. Trendyol, N11, Hepsiburada) seçebilirsiniz.
+3. **Eski config/sites_config.json:** Geriye dönük uyumluluk için halen desteklenir, ancak plugin ve UI tabanlı selector yönetimi tercih edilir.
+
+**Generic scraper'lar (requests/selenium) her zaman önce JSON-LD scriptlerinden ürün çıkarmaya çalışır, sonra sizin sağladığınız seçicilere fallback yapar.**
 
 ### Ortam Değişkenleri (`.env`)
 API anahtarları veya proxy ayarları gibi hassas veriler için:

@@ -1,0 +1,8 @@
+{
+  "selectors": {
+    "product_item": "li.column",
+    "product_name": "h3.productName",
+    "product_price": "div.proDetail span.newPrice ins"
+  },
+  "url": "https://www.n11.com/bilgisayar/dizustu-bilgisayar"
+}
