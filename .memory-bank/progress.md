@@ -18,12 +18,12 @@
  - [X] CI workflow eklendi: `.github/workflows/ci.yml` (smoke import test).
 
 ### Devam Ediyor (IN PROGRESS)
-- [ ] Unit testler ve linter kurulumu.
-- [ ] Plugin güvenliği için sandbox/manifest politika taslağı ve testleri.
+- [ ] `app.py` modern UI tasarımı — sekmeli yapı, sidebar iyileştirmesi, session state, metrikler, interaktif tablo, status spinner.
 
 ### Gelecek (TODO)
+- [ ] Unit testler ve linter kurulumu (pytest, flake8).
 - [ ] Plugin güvenliği için sandbox/manifest politika taslağı ve testleri.
-- [ ] Anti-bot stratejileri: proxy, rate-limiting, retry, headless/fingerprint önlemleri ve bunların dokümantasyonu.
+- [ ] Anti-bot stratejileri: proxy, rate-limiting, retry, headless/fingerprint önlemleri ve dokümantasyon.
 
 ### Bilinen Riskler
 - [!] `custom_plugins` dinamik importu güvenlik riski taşır — production ortamında sandbox veya izole çalışma önerilir.
@@ -33,4 +33,5 @@
 - Bu `progress.md` dosyası belleğin “fiziksel durumunu” gösterir ve 14 Nov 2025 tarihinde güncellenmiştir.
 
 ### Change Log
-- 14 Nov 2025 — v2.0.0 yayımlandı: Streamlit + plugin mimarisi göçü tamamlandı; core scrapers eklendi; plugin şablonu eklendi; `requirements.txt` güncellendi; değişiklikler `main` dalına pushlandı ve `v2.0.0` etiketi oluşturuldu.
+- 14 Nov 2025 (Saat: ~14:30) — v2.0.0 yayımlandı: Streamlit + plugin mimarisi göçü tamamlandı.
+- 14 Nov 2025 (Saat: ~15:00) — **YENİDEN PLANLA:** UX tasarımı iterasyonu başlatıldı. `app.py` modern bileşenler (tabs, sidebar, status, metrics, dataframe) ile yeniden tasarlanacak.
