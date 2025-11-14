@@ -1,41 +1,36 @@
+﻿# Custom Plugins  Geliştirici Kılavuzu
 
-# Custom Plugins — Development Guide
+Müşterinin özel kazıyıcılarını custom_plugins/ klasörüne ekleyin.
 
-Place user-provided scrapers in the `custom_plugins/` folder. Each plugin is a
-Python module that follows a small contract so the core engine can discover
-and run it safely.
+##  Yeni Plugin Ekleme
 
-Required contract
-- `metadata` (dict) — fields: `name`, `version`, `description`, `supported_sites`.
-- `def run(url: str, config: dict) -> list` — returns a `List[Dict]` where each
-	dict represents a product (e.g. `{"title": ..., "price": ..., "url": ...}`).
+### Dosya Yapısı
+`
+custom_plugins/
+ _template.py              # Template
+ my_site_scraper.py        # Plugin kodu
+ my_site_scraper.json      # Seçiciler (ÖNERİLEN)
+`
 
-Optional fields
-- `metadata['requirements']` — list of pip package names required by the plugin.
+### Adımlar
+1. _template.py kopyala  my_site_scraper.py
+2. example_amazon.json kopyala  my_site_scraper.json
+3. Seçicileri .json dosyasında güncelle
+4. Plugin kodunu düzenle
+5. Test: python custom_plugins/my_site_scraper.py
+6. Streamlit'te kullan:  "plugin"  "custom_plugins.my_site_scraper"
 
-How to add a plugin
-1. Copy `_template.py` to `custom_plugins/my_plugin.py`.
-2. Edit `metadata` and implement `run()` with site-specific parsing.
-3. (Optional) List any extra dependencies in `metadata['requirements']`.
-4. Restart Streamlit UI — the engine will auto-discover new plugins.
+##  Seçici Yükleme Sırası
 
-Security notes
-- Plugins execute arbitrary Python code. For production deployments:
-	- Validate plugin metadata before enabling.
-	- Run plugins inside sandboxed containers when possible.
-	- Require code review for new plugins.
+1. Streamlit'ten config['selectors']
+2. Plugin .json dosyası
+3. metadata['default_selectors']
 
-Testing locally
-- You can run a plugin directly for quick testing:
+##  Örnek
+Bkz: example_amazon.py + example_amazon.json
 
-```powershell
-python custom_plugins\my_plugin.py
-```
+##  Güvenlik
+- Production: plugin metadata valide et
+- Plugins sandbox/container'da çalıştır
+- Kod review yap
 
-Example
-- See `_template.py` for a minimal working example using `requests` + `BeautifulSoup`.
-
-Best practices
-- Keep plugin logic small and focused on parsing.
-- Prefer configuration-driven selectors (pass `config` from UI) rather than hardcoding selectors.
-- Return consistent product dicts across plugins to make exporting simple.

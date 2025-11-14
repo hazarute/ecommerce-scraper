@@ -1,0 +1,14 @@
+{
+  "site_name": "Amazon",
+  "url_pattern": "amazon.com",
+  "selectors": {
+    "product_container": "div[data-component-type='s-search-result']",
+    "product_item": "div.s-result-item[data-component-type='s-search-result']",
+    "product_name": "h2 a span.a-size-base-plus",
+    "product_price": "span.a-price-whole",
+    "product_image": "img.s-image"
+  },
+  "wait_time": 5,
+  "headless": true,
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+}
