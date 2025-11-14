@@ -4,23 +4,27 @@
 Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, hangi kararlar ve nedenleri. Bu bir yapılacaklar listesi değil; kısa ve net bir özet olmalıdır.
 
 ## Güncel Durum (14 Nov 2025)
-- Proje: CLI'den Streamlit + Plugin mimarisine dönüşüm sürecinde.
-- Kök dizin yapısı kullanıcı tarafından Repository `ReadMe.md`'e uygun şekilde oluşturuldu: `core/`, `core/scrapers/`, `custom_plugins/`, `utils/`, `data/` ve `_legacy_backup/` dizinleri mevcut.
-- Öncelik: `/.memory-bank/` içindeki dokümantasyon sabitlenmiş ve proje dönüşüm kararları kayıt altına alınmıştır.
-- Kod: `custom_plugins/_template.py` ve `custom_plugins/README.md` hazır. Ancak bazı çekirdek dosyalar hâlâ hem kök `scrapers/` içinde hem de `core/scrapers/` içinde bulunuyor; gerçek taşıma (`git mv`) yapılmadı — bu nedenle commit geçmişinin korunması için `git mv` ile taşıma öneriliyor.
-- Engeller: Anti-bot korumaları (Cloudflare, CAPTCHA, JS-challenge) bazı hedef sitelerde veri çekmeyi engelliyor; Selenium stratejileri, proxy ve davranış simülasyonu hâlâ araştırılıyor.
+- Proje: CLI'den Streamlit + Plugin mimarisine dönüşüm başarıyla tamamlandı ve `v2.0.0` sürümü olarak yayımlandı.
+- Kök dizin yapısı repoda `ReadMe.md`'de tanımlandığı şekilde düzenlendi: `core/`, `core/scrapers/`, `custom_plugins/`, `utils/`, `data/` ve `_legacy_backup/` dizinleri mevcut.
+- Kod: `core/scrapers/` altında `base_scraper.py`, `requests_scraper.py`, `selenium_scraper.py` oluşturuldu (legacy içerik modernize edilerek taşındı). `custom_plugins/_template.py` ve `custom_plugins/README.md` eklendi.
+- Release ve VCS: Tüm değişiklikler commit edilip `main` dalına pushlandı; ayrıca `v2.0.0` annotated tag oluşturuldu ve origin'a gönderildi.
+- Bağımlılıklar: `requirements.txt` güncellendi; `streamlit` eklendi.
+- Engeller: Anti-bot korumaları (Cloudflare, CAPTCHA, JS-challenge) hâlâ bazı sitelerde sorun yaratabiliyor; plugin güvenliği production için ayrı önlem gerektiriyor (sandbox, manifest kontrolü).
+
+ - Yeni Kod Eklentileri (14 Nov 2025):
+	 - `utils/fileops.py` eklendi: `save_to_csv` ve `save_html_debug` fonksiyonları eklendi (pandas bağımlılığı eklendi).
+	 - `core/engine.py` eklendi: plugin discovery (`discover_plugins`) ve job orchestration (`run_job`) fonksiyonları.
+	 - `app.py` eklendi: minimal Streamlit wireframe — mode seçimi, URL girişi, plugin seçimi ve Run butonu ile sonuç gösterimi + CSV export.
+	 - `requirements.txt` güncellendi: `streamlit` ve `pandas` eklendi.
 
 ## Kararlar (Onay Bekleyen / Onaylanan)
-- Onaylanan: Bellek bankası önce güncellenecek; sonra kaynak dosyalar taşınacak.
-- Onaylanan: Plugin API basit tutulacak: `metadata` + `run(url, config)` → `List[Dict]`.
-- Bekliyor: `custom_plugins` için production sandbox politikası ve manifest zorunlulukları.
-- Yeni Not: Repository yapısını kullanıcı oluşturdu; taşıma (fiziksel dosya hareketi) ve commit'leri gerçekleştirmeden önce onay isteniyor.
+ - Onaylanan: Bellek bankası güncellendi ve taşınma ile ilgili değişiklikler repoya işlendi.
+ - Onaylanan: Plugin API basit tutulacak: `metadata` + `run(url, config)` → `List[Dict]`.
+ - Bekliyor: `custom_plugins` için production sandbox politikası ve manifest zorunlulukları; dağıtıma alınmadan önce güvenlik incelemesi önerilir.
 
 ## Son Eylemler (Kısa)
-1. `/.memory-bank/` dosyalarını yeni protokole göre yeniden yaz (tamamlandı).
-2. `custom_plugins/_template.py` ve `custom_plugins/README.md` oluşturuldu (kullanıcı/repoda mevcut).
-3. `core/` ve `utils/` klasörleri oluşturuldu (kullanıcı tarafından lokal olarak tamamlandı). `scrapers/` içeriğinin `core/scrapers/` altına taşınması (fiziksel `git mv`) hâlâ beklemede — bu adım commit geçmişini korumak için önerilir.
-4. Taşıma ve commit öncesi: `git status` ve kısa bir taşıma planı gösterilecek, ardından onayınız alınacak.
+1. `/.memory-bank/` dosyaları yeni protokole göre yeniden yazıldı (tamamlandı).
+2. `custom_plugins/_template.py` ve `custom_plugins/README.md` oluşturuldu ve repoya eklendi.
 
 ## Notlar ve Kanıtlar
 - Tüm önemli teknik kararlar ve mimari değişiklikler burada belgelenecek.

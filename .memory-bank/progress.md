@@ -1,20 +1,29 @@
 # progress.md — İlerleme Durumu (Bellek Bankası)
 
-## Güncelleme: Bellek Bankası Yeniden Tasarımı (14 Nov 2025)
+## Güncelleme: V2.0 Yayın ve Dönüşüm (14 Nov 2025)
 
 ### Tamamlandı (DONE)
-- [X] `/.memory-bank/` içindeki tüm ana dokümanların yeniden yazılması ve yeni protokole uygun hale getirilmesi (`projectbrief.md`, `productContext.md`, `activeContext.md`, `systemPatterns.md`, `techContext.md`, `progress.md`).
-- [X] `custom_plugins/_template.py` ve `custom_plugins/README.md` dosyalarının oluşturulması (repo içinde mevcut).
-- [X] `core/` ve `utils/` dizinlerinin oluşturulması (kök yapıyı kullanıcı oluşturdu).
+- [X] `/.memory-bank/` içindeki ana dokümanların yeni protokole göre güncellenmesi.
+- [X] Legacy `scrapers/` içeriğinin modernize edilerek `core/scrapers/` altına eklenmesi (`base`, `requests`, `selenium`).
+- [X] `custom_plugins/_template.py` ve `custom_plugins/README.md` eklenmesi.
+- [X] `requirements.txt`'e `streamlit` eklenmesi.
+- [X] Tüm değişikliklerin commit edilip `main` dalına pushlanması.
+- [X] Annotated tag `v2.0.0` oluşturulup `origin`'e pushlandı.
+ - [X] `utils/fileops.py` eklendi ve `save_to_csv` / `save_html_debug` fonksiyonları uygulandı.
+ - [X] `pandas` `requirements.txt`'e eklendi.
+ - [X] `core/engine.py` eklendi (plugin discovery + run_job).
+ - [X] `app.py` Streamlit wireframe eklendi ve commit/push yapıldı.
 
 ### Devam Ediyor (IN PROGRESS)
-- [ ] `scrapers/` içeriğinin `core/scrapers/` altına `git mv` ile taşınması — fiziksel taşıma/commit bekliyor (taşıma planı hazır; onay bekleniyor).
-
-### Gelecek (TODO)
 - [ ] `app.py` Streamlit wireframe ve `core.engine` entegrasyonu.
 - [ ] `utils/exporters.py` ile CSV/JSON exporter'ların uygulanması ve test edilmesi.
-- [ ] `requirements.txt` güncellemesi (`streamlit` eklenmesi) ve dependency testleri.
 - [ ] Unit testler, linter ve CI pipeline entegrasyonu.
+ - [ ] `utils/exporters.py` ile CSV/JSON exporter'ların uygulanması ve test edilmesi.
+ - [ ] Unit testler, linter ve CI pipeline entegrasyonu.
+
+### Gelecek (TODO)
+- [ ] Plugin güvenliği için sandbox/manifest politika taslağı ve testleri.
+- [ ] Anti-bot stratejileri: proxy, rate-limiting, retry, headless/fingerprint önlemleri ve bunların dokümantasyonu.
 
 ### Bilinen Riskler
 - [!] `custom_plugins` dinamik importu güvenlik riski taşır — production ortamında sandbox veya izole çalışma önerilir.
@@ -24,4 +33,4 @@
 - Bu `progress.md` dosyası belleğin “fiziksel durumunu” gösterir ve 14 Nov 2025 tarihinde güncellenmiştir.
 
 ### Change Log
-- 14 Nov 2025 — Bellek güncellemesi: kullanıcı yeni dosya yapısını oluşturdu; taşıma adımı (`git mv`) onaya açık. (Yapıldı: memory update by assistant per user's instruction)
+- 14 Nov 2025 — v2.0.0 yayımlandı: Streamlit + plugin mimarisi göçü tamamlandı; core scrapers eklendi; plugin şablonu eklendi; `requirements.txt` güncellendi; değişiklikler `main` dalına pushlandı ve `v2.0.0` etiketi oluşturuldu.
