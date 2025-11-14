@@ -1,6 +1,6 @@
 {
   "hepsiburada": {
-    "url": "https://www.hepsiburada.com/",
+    "url": "https://www.hepsiburada.com/laptop-notebook-dizustu-bilgisayarlar-c-98",
     "method": "selenium",
     "selectors": {
       "product_container": null,
@@ -11,7 +11,7 @@
     "wait_time": 5
   },
   "trendyol": {
-    "url": "https://www.trendyol.com/",
+    "url": "https://www.trendyol.com/laptop-x-c103108",
     "method": "selenium",
     "selectors": {
       "product_container": "div.prdct-cntnr-wrppr",
@@ -23,7 +23,7 @@
     "wait_time": 5
   },
   "n11": {
-    "url": "https://www.n11.com/",
+    "url": "https://www.n11.com/bilgisayar/dizustu-bilgisayar",
     "method": "selenium",
     "selectors": {
       "product_container": "ul.list-ul",
