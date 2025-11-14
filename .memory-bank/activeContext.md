@@ -3,10 +3,14 @@
 ## Amaç
 Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, hangi kararlar ve nedenleri. Bu bir yapılacaklar listesi değil; kısa ve net bir özet olmalıdır.
 
-## Güncel Durum (14 Nov 2025 — Bug Fix & Optimization)
-- **Proje Evresi:** v2.0.0 altyapısı + Modern UI tasarımı tamamlandı. Şimdi **selector algılama hatası düzeltiliyor**.
-- **Fokus:** Manuel URL girişinde site otomatik algılanmalı, site'e ait selector'lar yüklenebilmeli.
-- **Odak Modülü:** `app.py` — URL'den site algılama ve selector yükleme logic'i. `selenium_scraper.py` parse fonksiyonları test edilmeli.
+## Güncel Durum (14 Nov 2025 — Plugin Architecture v2)
+- **Proje Evresi:** Modern Streamlit UI + Bug fixes tamamlandı. Şimdi **plugin selector mimarisi (OPTION 2) uygulandı**.
+- **Fokus:** Plugin'ler ayrı `.json` config dosyalarıyla seçici yönetimi yapacaklar.
+- **Tamamlanan:**
+  - ✅ Plugin template güncelleştirildi (selector yükleme logic)
+  - ✅ Örnek plugin: `example_amazon.py` + `example_amazon.json` 
+  - ✅ `core/engine.py`: plugin config otomatik yükleme
+  - ✅ README.md: müşteri kılavuzu
 - **Mevcut Durum:** 
   - `core/`, `custom_plugins/`, `utils/` modülleri stabil ve hazır.
   - `config/sites_config.json` ile site presetleri ve seçiciler mevcut.
@@ -23,22 +27,25 @@ Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, 
    - `app.py` güncellendi: `config/sites_config.json` entegrasyonu eklendi (site presetleri ile selectors doldurma).
    - CI: `.github/workflows/ci.yml` eklendi — requirements kurulumu ve temel import smoke testi çalıştırılıyor.
 
-## Kararlar (Onay Bekleyen / Onaylanan)
- - Onaylanan: Bellek bankası güncellendi ve taşınma ile ilgili değişiklikler repoya işlendi.
- - Onaylanan: Plugin API basit tutulacak: `metadata` + `run(url, config)` → `List[Dict]`.
- - Bekliyor: `custom_plugins` için production sandbox politikası ve manifest zorunlulukları; dağıtıma alınmadan önce güvenlik incelemesi önerilir.
+## Kararlar (Onaylanan)
+ - ✅ Bellek bankası güncellendi ve taşınma ile ilgili değişiklikler repoya işlendi.
+ - ✅ Plugin API: `metadata` + `run(url, config)` → `List[Dict]`.
+ - ✅ Plugin Selector Mimarisi: OPTION 2 (Ayrı `.json` config dosyası) seçildi ve uygulandı.
+ - ⏳ Production'da: sandbox politikası + manifest doğrulaması (İleriki iterasyon)
 
 ## Son Eylemler (Kısa)
 1. `/.memory-bank/` dosyaları yeni protokole göre yeniden yazıldı (tamamlandı).
 2. `custom_plugins/_template.py` ve `custom_plugins/README.md` oluşturuldu ve repoya eklendi.
 
-## Tasarım Kararları ve Bug Fix'ler (14 Nov 2025)
-- **Sekmeli Yapı:** 3 tab (Kazıma, Eklenti, Veri Geçmişi) ✅
-- **Sidebar Organizasyonu:** Site + Mode, expander'da gelişmiş ayarlar ✅
-- **Session State:** Kazıma sonuçları kalıcı ✅
-- **Feedback Loop:** Status spinner + toast/balloons ✅
-- **AUTO-DETECT:** Manuel URL girişinde "hepsiburada", "trendyol", "n11" içeren linkler otomatik algılanacak ve selector'lar yüklenecek — **BUG FIX** (Commit: 62a19ca)
-- **Site Bildirimi:** Manuel input'ta site algılanırsa sidebar'da bilgi mesajı gösterilecek
+## Tasarım Kararları — Plugin Architecture (14 Nov 2025)
+- **Seçici Yönetimi:** OPTION 2 (Ayrı .json) ✅
+  - Plugin'ler Python kodu + ayrı `.json` config dosyası
+  - Seçiciler `.json` dosyasında (müşteri friendly)
+  - Selector yükleme sırası: config → .json → default
+- **Modulerlik:** Plugin'ler bağımsız, self-contained
+- **DRY:** Seçiciler ve kod ayrılı
+- **Müşteri Deneyimi:** Müşteri `.json` edit eder, Python yazması gerekmiyor
+- **Extensibility:** Yeni plugin = `.py` + `.json` kopyalama + seçicileri güncelleme
 
 ## Notlar ve Kanıtlar
 - **14 Nov 2025 (~16:30):** Modern UI tasarımı tamamlandı. Smoke test: 6/6 pass ✅
