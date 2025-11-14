@@ -110,15 +110,19 @@ with st.sidebar:
     # Eğer site="manuel" ise, URL'den site adını çıkarmaya çalış
     selectors = {}
     detected_site = site_choice
+    detected_mode = mode  # Mode da detect edilecek
     
     if site_choice == "manuel" and url:
         # URL'den site adını otomatik algıla
         if "hepsiburada" in url.lower():
             detected_site = "hepsiburada"
+            detected_mode = "selenium"  # Hepsiburada Selenium gerektiriyor
         elif "trendyol" in url.lower():
             detected_site = "trendyol"
+            detected_mode = "selenium"  # Trendyol Selenium gerektiriyor
         elif "n11" in url.lower():
             detected_site = "n11"
+            detected_mode = "selenium"  # N11 bot engelleme var, Selenium şart
     
     # Algılanan veya seçilen siteden selector'ları yükle
     if detected_site != "manuel":
@@ -128,9 +132,13 @@ with st.sidebar:
         
         # Eğer manuel URL ise ve siteden farklı bir site algılandıysa, bilgi ver
         if site_choice == "manuel":
-            st.sidebar.info(f"ℹ️ URL'den algılanan site: **{detected_site.upper()}** — Seçiciler otomatik yüklendi")
+            mode_text = f" (Mod: **{detected_mode.upper()}**)" if detected_mode != mode else ""
+            st.sidebar.info(f"ℹ️ URL'den algılanan site: **{detected_site.upper()}**{mode_text}\n— Seçiciler ve mode otomatik yüklendi")
     elif site_choice == "manuel":
         st.sidebar.warning("⚠️ Site algılanamadı. Selector'ları manuel girmeniz gerekecek.")
+    
+    # Override mode if detected
+    mode = detected_mode
     
     st.markdown("---")
     
