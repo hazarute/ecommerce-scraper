@@ -64,20 +64,21 @@ with st.sidebar:
             help="requests: Hızlı (statik siteler), selenium: Dinamik siteler, plugin: Özel modüller"
         )
     
-    # URL giriş
-    if site_choice == "manuel":
-        url = st.text_input(
-            "🔗 Target URL",
-            value="https://example.com/",
-            placeholder="https://example.com/products"
-        )
-    else:
+    # URL giriş — site seçilmişse varsayılan değer config'den gelir
+    if site_choice != "manuel":
         site_conf = SITE_CONFIGS.get(site_choice, {})
         default_url = site_conf.get('url', "https://example.com/")
         url = st.text_input(
             "🔗 Target URL",
             value=default_url,
-            help=f"Site: {site_choice}"
+            help=f"Site: {site_choice} — Config'ten otomatik yüklendi"
+        )
+    else:
+        url = st.text_input(
+            "🔗 Target URL",
+            value="https://example.com/",
+            placeholder="https://example.com/products",
+            help="Manuel URL girişi — selector'ları manuel seçmeniz gerekecek"
         )
     
     # Gelişmiş Ayarlar (gizli expander)
@@ -106,11 +107,30 @@ with st.sidebar:
             st.warning("📦 Hiçbir plugin yüklenmedi.")
     
     # Seçim yapılmış sitenin selector'larını yükle
+    # Eğer site="manuel" ise, URL'den site adını çıkarmaya çalış
     selectors = {}
-    if site_choice != "manuel":
-        site_conf = SITE_CONFIGS.get(site_choice, {})
+    detected_site = site_choice
+    
+    if site_choice == "manuel" and url:
+        # URL'den site adını otomatik algıla
+        if "hepsiburada" in url.lower():
+            detected_site = "hepsiburada"
+        elif "trendyol" in url.lower():
+            detected_site = "trendyol"
+        elif "n11" in url.lower():
+            detected_site = "n11"
+    
+    # Algılanan veya seçilen siteden selector'ları yükle
+    if detected_site != "manuel":
+        site_conf = SITE_CONFIGS.get(detected_site, {})
         selectors = site_conf.get('selectors', {})
-        selectors['site'] = site_choice
+        selectors['site'] = detected_site
+        
+        # Eğer manuel URL ise ve siteden farklı bir site algılandıysa, bilgi ver
+        if site_choice == "manuel":
+            st.sidebar.info(f"ℹ️ URL'den algılanan site: **{detected_site.upper()}** — Seçiciler otomatik yüklendi")
+    elif site_choice == "manuel":
+        st.sidebar.warning("⚠️ Site algılanamadı. Selector'ları manuel girmeniz gerekecek.")
     
     st.markdown("---")
     
