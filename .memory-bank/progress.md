@@ -18,6 +18,8 @@
  - [X] CI workflow eklendi: `.github/workflows/ci.yml` (smoke import test).
  - [X] `app.py` modern UI tasarımı tamamlandı: sekmeli yapı, sidebar iyileştirmesi, session state, metrikler, interaktif tablo, status spinner.
  - [X] Smoke test başarıyla geçti (6/6): kütüphaneler, core modülleri, konfigürasyon, dizinler, syntax, plugin discovery.
+ - [X] Kategori sayfaları ile konfigürasyon güncellendi (hepsiburada/laptop, n11/laptop, trendyol/laptop).
+ - [X] Selector algılama hatası düzeltildi: URL'den site AUTO-DETECT, manual input'ta selector'lar yüklenmesi sağlandı (Commit: 62a19ca).
 
 ### Devam Ediyor (IN PROGRESS)
 
@@ -37,3 +39,4 @@
 - 14 Nov 2025 (Saat: ~14:30) — v2.0.0 yayımlandı: Streamlit + plugin mimarisi göçü tamamlandı.
 - 14 Nov 2025 (Saat: ~15:00) — **YENİDEN PLANLA:** UX tasarımı iterasyonu başlatıldı. `app.py` modern bileşenler (tabs, sidebar, status, metrics, dataframe) ile yeniden tasarlanacak.
 - 14 Nov 2025 (Saat: ~16:30) — `app.py` modern UI tasarımı tamamlandı ve Smoke test geçti (6/6). Streamlit sunucusu başarıyla çalışıyor (port 8501).
+- 14 Nov 2025 (Saat: ~17:30) — Kategori sayfaları ile konfigürasyon güncellendi. Selector algılama hatası düzeltildi (AUTO-DETECT from URL).

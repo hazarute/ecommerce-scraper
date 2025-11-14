@@ -3,10 +3,10 @@
 ## Amaç
 Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, hangi kararlar ve nedenleri. Bu bir yapılacaklar listesi değil; kısa ve net bir özet olmalıdır.
 
-## Güncel Durum (14 Nov 2025 — UX Tasarımı Aşaması)
-- **Proje Evresi:** v2.0.0 altyapısı tamamlandı; şimdi **Streamlit UI'sinin modern ve kullanıcı-odaklı tasarımına geçiliyor**.
-- **Fokus:** `app.py` tamamen yeniden tasarlanacak — görsel hiyerarşi, sekmeli yapı, sidebar iyileştirmesi, session state yönetimi ve akıllı geri bildirim (spinner, toast, metrikler).
-- **Odak Modülü:** `app.py` — Streamlit bileşenleri (st.tabs, st.sidebar, st.status, st.metric, st.dataframe, st.metric, column_config) entegrasyonu.
+## Güncel Durum (14 Nov 2025 — Bug Fix & Optimization)
+- **Proje Evresi:** v2.0.0 altyapısı + Modern UI tasarımı tamamlandı. Şimdi **selector algılama hatası düzeltiliyor**.
+- **Fokus:** Manuel URL girişinde site otomatik algılanmalı, site'e ait selector'lar yüklenebilmeli.
+- **Odak Modülü:** `app.py` — URL'den site algılama ve selector yükleme logic'i. `selenium_scraper.py` parse fonksiyonları test edilmeli.
 - **Mevcut Durum:** 
   - `core/`, `custom_plugins/`, `utils/` modülleri stabil ve hazır.
   - `config/sites_config.json` ile site presetleri ve seçiciler mevcut.
@@ -32,14 +32,19 @@ Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, 
 1. `/.memory-bank/` dosyaları yeni protokole göre yeniden yazıldı (tamamlandı).
 2. `custom_plugins/_template.py` ve `custom_plugins/README.md` oluşturuldu ve repoya eklendi.
 
-## Tasarım Kararları (14 Nov 2025 — UX İterasyonu)
-- **Sekmeli Yapı:** 3 tab (Kazıma, Eklenti, Veri Geçmişi) → kullanıcı cognitive load'ını azaltacak.
-- **Sidebar Organizasyonu:** Site + Mode temelinde, gelişmiş ayarlar expander'da gizli → temiz ve professional.
-- **Session State:** Kazıma sonuçları session'da kalacak → sekme geçişleri sırasında veri kaybolmayacak.
-- **Feedback Loop:** `st.status` spinner + adım loglar + `st.toast/balloons` başarı → modern UX best practice.
-- **Metrikler ve Veri Görselleştirme:** Pandas ile özet kartlar (`st.metric`) + interaktif tablo (`st.dataframe` + `ImageColumn`) → professional ve actionable.
+## Tasarım Kararları ve Bug Fix'ler (14 Nov 2025)
+- **Sekmeli Yapı:** 3 tab (Kazıma, Eklenti, Veri Geçmişi) ✅
+- **Sidebar Organizasyonu:** Site + Mode, expander'da gelişmiş ayarlar ✅
+- **Session State:** Kazıma sonuçları kalıcı ✅
+- **Feedback Loop:** Status spinner + toast/balloons ✅
+- **AUTO-DETECT:** Manuel URL girişinde "hepsiburada", "trendyol", "n11" içeren linkler otomatik algılanacak ve selector'lar yüklenecek — **BUG FIX** (Commit: 62a19ca)
+- **Site Bildirimi:** Manuel input'ta site algılanırsa sidebar'da bilgi mesajı gösterilecek
 
 ## Notlar ve Kanıtlar
-- Bu güncelleme: 14 Nov 2025 — Mimar "UX Tasarımı" komutu verdi. `app.py` modern bileşenlerle yeniden tasarlanacak.
-- Mevcut `core/` ve `utils/` modülleri değişmeyecek; sadece `app.py` UI layer yenilenmesi.
-- Tüm teknik detaylar `systemPatterns.md` ve `techContext.md`'de tutarlı tutulacak.
+- **14 Nov 2025 (~16:30):** Modern UI tasarımı tamamlandı. Smoke test: 6/6 pass ✅
+- **14 Nov 2025 (~17:00):** Kategori sayfaları ile konfigürasyon güncellendi (hepsiburada/laptop, n11/laptop, trendyol/laptop)
+- **14 Nov 2025 (~17:30):** Selector algılama hatası tespit edildi → **URL'den site AUTO-DETECT** fix uygulandı (62a19ca)
+  - Manuel URL girildiğinde, "hepsiburada"/"trendyol"/"n11" içeren linkler otomatik algılanacak
+  - Algılanan siteden selector'lar yüklenecek
+  - Sidebar'da bilgi mesajı gösterilecek
+- **Test Gerekli:** Streamlit'te manuel URL input ve kazıma işlemi doğrulanmalı
