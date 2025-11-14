@@ -25,13 +25,20 @@
    - `example_amazon.py` + `example_amazon.json`: Production-ready örnek
    - `core/engine.py`: `_load_plugin_config()` eklendi
    - `custom_plugins/README.md`: Müşteri kılavuzu
+ - [X] N11 anti-bot debugging ve fix (Commit: 75a6128):
+   - `tests/debug_n11.py`: N11 selektör ve erişim test scripti
+   - Root cause tespit: N11 requests library'yi blokluyor (403 Forbidden)
+   - Çözüm: app.py'de URL'den site algılanıp mode otomatik Selenium'a ayarlanıyor
+   - Sidebar'da algılanan site + mod bilgisi gösteriliyor
 
 ### Devam Ediyor (IN PROGRESS)
 
 ### Gelecek (TODO)
+- [ ] **TEST:** Streamlit'te N11 URL input ile Selenium mode'da kazıma testi
+- [ ] **TEST:** Hepsiburada/Trendyol URL'leri ile otomatik mode override kontrolü
 - [ ] Unit testler ve linter kurulumu (pytest, flake8).
-- [ ] Plugin güvenliği için sandbox/manifest politika taslağı ve testleri.
-- [ ] Anti-bot stratejileri: proxy, rate-limiting, retry, headless/fingerprint önlemleri ve dokümantasyon.
+- [ ] Plugin güvenliği için sandbox/manifest politika taslaması ve testleri.
+- [ ] Ekstra anti-bot stratejileri: proxy, rate-limiting, retry, fingerprint teknikleri.
 
 ### Bilinen Riskler
 - [!] `custom_plugins` dinamik importu güvenlik riski taşır — production ortamında sandbox veya izole çalışma önerilir.
@@ -46,3 +53,4 @@
 - 14 Nov 2025 (Saat: ~16:30) — Modern UI tasarımı tamamlandı + Smoke test: 6/6 ✅
 - 14 Nov 2025 (Saat: ~17:00) — Kategori sayfaları güncellendi + AUTO-DETECT bug fix
 - 14 Nov 2025 (Saat: ~18:00) — Plugin Selector Architecture (OPTION 2) tamamlandı. Example plugin yazıldı.
+- 14 Nov 2025 (Saat: ~18:45) — N11 anti-bot debugging + mode auto-detection implementasyonu (Commit: 75a6128)

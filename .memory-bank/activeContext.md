@@ -3,19 +3,23 @@
 ## Amaç
 Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, hangi kararlar ve nedenleri. Bu bir yapılacaklar listesi değil; kısa ve net bir özet olmalıdır.
 
-## Güncel Durum (14 Nov 2025 — Plugin Architecture v2)
-- **Proje Evresi:** Modern Streamlit UI + Bug fixes tamamlandı. Şimdi **plugin selector mimarisi (OPTION 2) uygulandı**.
-- **Fokus:** Plugin'ler ayrı `.json` config dosyalarıyla seçici yönetimi yapacaklar.
-- **Tamamlanan:**
-  - ✅ Plugin template güncelleştirildi (selector yükleme logic)
-  - ✅ Örnek plugin: `example_amazon.py` + `example_amazon.json` 
-  - ✅ `core/engine.py`: plugin config otomatik yükleme
-  - ✅ README.md: müşteri kılavuzu
+## Güncel Durum (14 Nov 2025 — N11 Anti-Bot Fix & Mode Auto-Detection)
+- **Proje Evresi:** Modern Streamlit UI + Plugin Architecture (OPTION 2) tamamlandı. Şimdi **site-specific anti-bot handling** uygulandı.
+- **Fokus:** N11/Hepsiburada/Trendyol gibi anti-bot korumalı siteler otomatik Selenium moduna geçiyor.
+- **Son Debug (N11 Sorunu):**
+  - ✅ N11 403 Forbidden hatası tespit edildi (requests library bloklaması)
+  - ✅ Root cause: N11 Cloudflare/anti-bot koruma → Selenium gerekli
+  - ✅ Çözüm: URL'den site algılanıp otomatik Selenium mode seçiliyor
+- **Tamamlanan Görevler:**
+  - ✅ Plugin template + OPTION 2 mimarisi
+  - ✅ Örnek plugin (Amazon) + config JSON
+  - ✅ URL auto-detection (site + selectors)
+  - ✅ N11/Hepsiburada/Trendyol için Selenium force (Commit: 75a6128)
+  - ✅ Debug script (tests/debug_n11.py) oluşturuldu
 - **Mevcut Durum:** 
-  - `core/`, `custom_plugins/`, `utils/` modülleri stabil ve hazır.
-  - `config/sites_config.json` ile site presetleri ve seçiciler mevcut.
-  - `utils/exporters.py` ve `utils/fileops.py` fonksiyonel.
-  - Mevcut minimal `app.py` daha gelişmiş tasarımla değiştirilecek.
+  - Tüm core modüller (`core/`, `custom_plugins/`, `utils/`) stabil
+  - `app.py` mode auto-detection ile hazır
+  - Sidebar'da algılanan site + mode gösterimi aktif
 - **Teknik Stack Güncellemesi:** `pandas` (metrikler, veri işleme), `time` (gecikmeler ve loglamalar), mevcut `core.engine` ve `utils` importları korunacak.
 
  - Yeni Kod Eklentileri (14 Nov 2025):
@@ -34,8 +38,10 @@ Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, 
  - ⏳ Production'da: sandbox politikası + manifest doğrulaması (İleriki iterasyon)
 
 ## Son Eylemler (Kısa)
-1. `/.memory-bank/` dosyaları yeni protokole göre yeniden yazıldı (tamamlandı).
-2. `custom_plugins/_template.py` ve `custom_plugins/README.md` oluşturuldu ve repoya eklendi.
+1. N11 sitesi 403 Forbidden hatasından Selenium gereksinimini tespit etti
+2. URL'den site auto-detection ve mode override implementasyonu
+3. tests/debug_n11.py debug scripti oluşturuldu
+4. app.py modeline anti-bot siteler için Selenium force eklendi (Commit: 75a6128)
 
 ## Tasarım Kararları — Plugin Architecture (14 Nov 2025)
 - **Seçici Yönetimi:** OPTION 2 (Ayrı .json) ✅
@@ -49,9 +55,12 @@ Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, 
 
 ## Notlar ve Kanıtlar
 - **14 Nov 2025 (~16:30):** Modern UI tasarımı tamamlandı. Smoke test: 6/6 pass ✅
-- **14 Nov 2025 (~17:00):** Kategori sayfaları ile konfigürasyon güncellendi (hepsiburada/laptop, n11/laptop, trendyol/laptop)
-- **14 Nov 2025 (~17:30):** Selector algılama hatası tespit edildi → **URL'den site AUTO-DETECT** fix uygulandı (62a19ca)
-  - Manuel URL girildiğinde, "hepsiburada"/"trendyol"/"n11" içeren linkler otomatik algılanacak
-  - Algılanan siteden selector'lar yüklenecek
-  - Sidebar'da bilgi mesajı gösterilecek
-- **Test Gerekli:** Streamlit'te manuel URL input ve kazıma işlemi doğrulanmalı
+- **14 Nov 2025 (~17:00):** Kategori sayfaları ile konfigürasyon güncellendi
+- **14 Nov 2025 (~17:30):** URL'den site auto-detect + selector yükleme (Commit: 62a19ca)
+- **14 Nov 2025 (~18:00):** Plugin Selector Architecture (OPTION 2) tamamlandı (Commit: 20b8a82)
+- **14 Nov 2025 (~18:45):** N11 anti-bot debugging
+  - Problem: N11 URL'den kazıma 403 Forbidden döndürüyor
+  - Root cause: N11 requests library'yi blokluyor (anti-bot protection)
+  - Solution: URL'den N11 algılanınca otomatik Selenium mode aktifleşiyor
+  - Commit: 75a6128 "fix: auto-detect mode for N11/Hepsiburada/Trendyol"
+- **Sonraki Test:** Streamlit UI'da N11 URL girildiğinde Selenium ile scrape işleminin başarılı olup olmadığı kontrol edilecek
