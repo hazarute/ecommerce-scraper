@@ -30,15 +30,20 @@
    - Root cause tespit: N11 requests library'yi blokluyor (403 Forbidden)
    - Çözüm: app.py'de URL'den site algılanıp mode otomatik Selenium'a ayarlanıyor
    - Sidebar'da algılanan site + mod bilgisi gösteriliyor
+ - [X] Integration tests ve Cloudflare blocking tespiti (Commit: e80aedb):
+   - `tests/test_n11_integration.py`: N11 URL detection ✅ + scraping ❌
+   - `tests/test_hepsiburada_jsonld.py`: Hepsiburada JSON-LD ✅ + scraping ❌
+   - `tests/TEST_REPORT_N11.md`: Comprehensive test report
+   - Finding: Tüm sitelerde anti-bot koruma (Cloudflare, redirects) aktif
 
 ### Devam Ediyor (IN PROGRESS)
 
 ### Gelecek (TODO)
-- [ ] **TEST:** Streamlit'te N11 URL input ile Selenium mode'da kazıma testi
-- [ ] **TEST:** Hepsiburada/Trendyol URL'leri ile otomatik mode override kontrolü
+- [ ] **DECISION:** Anti-bot bypass stratejisini seç (proxy/undetected-chromedriver/API)
+- [ ] **IMPL:** Seçilen stratejiyi implement et
+- [ ] **TEST:** N11/Hepsiburada ile tekrar test
 - [ ] Unit testler ve linter kurulumu (pytest, flake8).
 - [ ] Plugin güvenliği için sandbox/manifest politika taslaması ve testleri.
-- [ ] Ekstra anti-bot stratejileri: proxy, rate-limiting, retry, fingerprint teknikleri.
 
 ### Bilinen Riskler
 - [!] `custom_plugins` dinamik importu güvenlik riski taşır — production ortamında sandbox veya izole çalışma önerilir.
@@ -52,5 +57,6 @@
 - 14 Nov 2025 (Saat: ~15:00) — **YENİDEN PLANLA:** UX tasarımı iterasyonu başlatıldı.
 - 14 Nov 2025 (Saat: ~16:30) — Modern UI tasarımı tamamlandı + Smoke test: 6/6 ✅
 - 14 Nov 2025 (Saat: ~17:00) — Kategori sayfaları güncellendi + AUTO-DETECT bug fix
-- 14 Nov 2025 (Saat: ~18:00) — Plugin Selector Architecture (OPTION 2) tamamlandı. Example plugin yazıldı.
-- 14 Nov 2025 (Saat: ~18:45) — N11 anti-bot debugging + mode auto-detection implementasyonu (Commit: 75a6128)
+- 14 Nov 2025 (Saat: ~18:00) — Plugin Selector Architecture (OPTION 2) tamamlandı.
+- 14 Nov 2025 (Saat: ~18:45) — N11 anti-bot debugging + mode auto-detection (Commit: 75a6128)
+- 14 Nov 2025 (Saat: ~19:30) — Integration tests + Cloudflare blocking discovery (Commit: e80aedb)

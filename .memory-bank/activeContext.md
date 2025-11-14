@@ -3,23 +3,21 @@
 ## Amaç
 Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, hangi kararlar ve nedenleri. Bu bir yapılacaklar listesi değil; kısa ve net bir özet olmalıdır.
 
-## Güncel Durum (14 Nov 2025 — N11 Anti-Bot Fix & Mode Auto-Detection)
-- **Proje Evresi:** Modern Streamlit UI + Plugin Architecture (OPTION 2) tamamlandı. Şimdi **site-specific anti-bot handling** uygulandı.
-- **Fokus:** N11/Hepsiburada/Trendyol gibi anti-bot korumalı siteler otomatik Selenium moduna geçiyor.
-- **Son Debug (N11 Sorunu):**
-  - ✅ N11 403 Forbidden hatası tespit edildi (requests library bloklaması)
-  - ✅ Root cause: N11 Cloudflare/anti-bot koruma → Selenium gerekli
-  - ✅ Çözüm: URL'den site algılanıp otomatik Selenium mode seçiliyor
-- **Tamamlanan Görevler:**
-  - ✅ Plugin template + OPTION 2 mimarisi
-  - ✅ Örnek plugin (Amazon) + config JSON
-  - ✅ URL auto-detection (site + selectors)
-  - ✅ N11/Hepsiburada/Trendyol için Selenium force (Commit: 75a6128)
-  - ✅ Debug script (tests/debug_n11.py) oluşturuldu
+## Güncel Durum (14 Nov 2025 — N11 Anti-Bot Testing Complete)
+- **Proje Evresi:** Modern Streamlit UI + Plugin Architecture tamamlandı. **Mode auto-detection başarılı, fakat anti-bot koruma test sınırlaması.**
+- **Test Sonucu:** 
+  - ✅ URL detection başarılı (N11/Hepsiburada otomatik algılanıyor)
+  - ✅ Mode override çalışıyor (Selenium moduna geçiliyor)
+  - ❌ Cloudflare bot detection tüm siteleri blokluyor
+- **Root Cause:** N11, Hepsiburada vb. e-commerce siteleri anti-bot koruma (Cloudflare, etc.) kullanıyor
+- **Solution Path:**
+  1. Proxy + residential IP (production için)
+  2. Undetected-chromedriver (quick fix)
+  3. Official API (ideal long-term)
 - **Mevcut Durum:** 
-  - Tüm core modüller (`core/`, `custom_plugins/`, `utils/`) stabil
-  - `app.py` mode auto-detection ile hazır
-  - Sidebar'da algılanan site + mode gösterimi aktif
+  - URL detection fully functional
+  - Mode auto-override fully functional
+  - Scraping blocked by Cloudflare (expected behavior for bot protection)
 - **Teknik Stack Güncellemesi:** `pandas` (metrikler, veri işleme), `time` (gecikmeler ve loglamalar), mevcut `core.engine` ve `utils` importları korunacak.
 
  - Yeni Kod Eklentileri (14 Nov 2025):
@@ -38,10 +36,12 @@ Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, 
  - ⏳ Production'da: sandbox politikası + manifest doğrulaması (İleriki iterasyon)
 
 ## Son Eylemler (Kısa)
-1. N11 sitesi 403 Forbidden hatasından Selenium gereksinimini tespit etti
-2. URL'den site auto-detection ve mode override implementasyonu
-3. tests/debug_n11.py debug scripti oluşturuldu
-4. app.py modeline anti-bot siteler için Selenium force eklendi (Commit: 75a6128)
+1. Integration test yaz (N11 + Hepsiburada)
+2. URL detection & mode override testi: ✅ PASS
+3. Scraping test: ❌ FAIL (Cloudflare blocking)
+4. Root cause tespit: Anti-bot koruma tüm sitelerde aktif
+5. Test raporu oluştur: TEST_REPORT_N11.md
+6. Git commit: e80aedb (test files + report)
 
 ## Tasarım Kararları — Plugin Architecture (14 Nov 2025)
 - **Seçici Yönetimi:** OPTION 2 (Ayrı .json) ✅
@@ -54,13 +54,15 @@ Bu dosya projenin o anki "zihinsel durumu"dur: hangi modüller, hangi sorunlar, 
 - **Extensibility:** Yeni plugin = `.py` + `.json` kopyalama + seçicileri güncelleme
 
 ## Notlar ve Kanıtlar
-- **14 Nov 2025 (~16:30):** Modern UI tasarımı tamamlandı. Smoke test: 6/6 pass ✅
-- **14 Nov 2025 (~17:00):** Kategori sayfaları ile konfigürasyon güncellendi
-- **14 Nov 2025 (~17:30):** URL'den site auto-detect + selector yükleme (Commit: 62a19ca)
-- **14 Nov 2025 (~18:00):** Plugin Selector Architecture (OPTION 2) tamamlandı (Commit: 20b8a82)
-- **14 Nov 2025 (~18:45):** N11 anti-bot debugging
-  - Problem: N11 URL'den kazıma 403 Forbidden döndürüyor
-  - Root cause: N11 requests library'yi blokluyor (anti-bot protection)
-  - Solution: URL'den N11 algılanınca otomatik Selenium mode aktifleşiyor
-  - Commit: 75a6128 "fix: auto-detect mode for N11/Hepsiburada/Trendyol"
-- **Sonraki Test:** Streamlit UI'da N11 URL girildiğinde Selenium ile scrape işleminin başarılı olup olmadığı kontrol edilecek
+- **14 Nov 2025 (~18:45):** N11 anti-bot debugging + mode auto-detection (Commit: 75a6128)
+- **14 Nov 2025 (~19:00):** URL detection logic verification ✅
+- **14 Nov 2025 (~19:15):** Integration tests created (N11, Hepsiburada)
+  - Test 1: URL detection & mode override — ✅ PASS
+  - Test 2: N11 scraping — ❌ FAIL (Cloudflare blocking)
+  - Test 3: Hepsiburada scraping — ❌ FAIL (404 redirect)
+- **14 Nov 2025 (~19:30):** Test report created (TEST_REPORT_N11.md)
+- **Finding:** All major e-commerce sites have anti-bot protection
+  - N11: Cloudflare
+  - Hepsiburada: Session/redirect blocking
+  - Trendyol: Unknown (not tested yet)
+- **Next Action:** Implement proxy or undetected-chromedriver for Cloudflare bypass
