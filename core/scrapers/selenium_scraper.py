@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
 import time
@@ -30,7 +31,14 @@ class SeleniumScraper(BaseScraper):
         options.add_argument('--no-sandbox')
         options.add_argument('--window-size=1920,1080')
         options.add_argument('--disable-blink-features=AutomationControlled')
-        options.add_argument(f"user-agent={self.selectors.get('user_agent', 'Mozilla/5.0')}")
+        options.add_argument(
+            f"user-agent={self.selectors.get('user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36')}")
+
+        # Proxy desteği ekleniyor
+        proxy = self.selectors.get('proxy', None)
+        if proxy:
+            options.add_argument(f'--proxy-server={proxy}')
+
         driver = None
         try:
             service = Service(ChromeDriverManager().install())

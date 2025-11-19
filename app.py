@@ -204,7 +204,7 @@ with tab1:
                     results, err = engine.run_job(
                         url,
                         mode,
-                        selectors=selectors,
+                        selectors=selectors or {},
                         plugin_module=None,
                         headless=headless
                     )

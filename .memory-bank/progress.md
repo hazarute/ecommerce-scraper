@@ -14,11 +14,13 @@
 - [X] Tüm smoke testler ve arayüz doğrulandı (6/6 PASS)
 - [X] Modern UI ve plugin discovery başarıyla çalışıyor
 - [X] Generic scraper'lar (requests/selenium) Trendyol plugin mantığıyla güncellendi (JSON-LD + selector fallback, manuel/generic modda da geçerli)
+- [X] Akakçe plugin Selenium fallback desteğiyle güncellendi
+- [X] Template dosyası terminal logları detaylandırılarak geliştirildi
 
 ## Hatalar (BUGS)
 - [!] `custom_plugins` dinamik importu güvenlik riski taşır — production ortamında sandbox veya izole çalışma önerilir.
 - [!] Anti-bot engelleri (Cloudflare, CAPTCHA) bazı sitelerde scraping başarısını etkileyebilir; çözüm için proxy, davranış simülasyonu veya insan müdahalesi gerekebilir.
-- [!] Trendyol'da (ve bazı sitelerde) Selenium ile alınan page_source'ta ürünler yok, muhtemelen anti-bot/Cloudflare engeli. (14 Nov 2025)
+- [!] Trendyol'da (ve bazı sitelerde) Selenium ile alınan page_source'ta ürünler yok, muhtemelen anti-bot/Cloudflare engeli. (19 Nov 2025)
 
 ## Notlar
-- Bu dosya projenin “fiziksel durumu”nu gösterir ve 14 Nov 2025 tarihinde güncellenmiştir.
+- Bu dosya projenin “fiziksel durumu”nu gösterir ve 19 Nov 2025 tarihinde güncellenmiştir.
